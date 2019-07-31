@@ -5,8 +5,10 @@ namespace App\Http\Controllers\Backend;
 use App\Department;
 use App\Outlet;
 use Carbon\Carbon;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Validation\Rule;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -23,18 +25,18 @@ class DepartmentController extends Controller
         if(request()->ajax()) {
             return DataTables::of($query)
                 ->addColumn('edit', function (Department $department) {
-                    $route = route('department.edit', $department->id);
-                    return "<a href='$route' class='mb-2 mr-2 btn-icon btn btn-primary'><i class='pe-7s-tools btn-icon-wrapper'></i> Edit</a>";
+                    return view('architect.datatables.form-edit', ['route' => 'department', 'model' => $department]);
                 })
-                ->editColumn('active', function (Department $department) {
-                    $outletText = $department->active == true ? "Active" : "Inactive";
-                    $badge = $department->active  == true ? "success" : "danger";
-                    return "<a href='javascript:void(0)' class='mb-2 mr-2 badge badge-$badge ? success : danger'>$outletText</a>";
+                ->addColumn('delete', function (Department $department) {
+                    return view('architect.datatables.form-delete', ['route' => 'department', 'model' => $department]);
+                })
+                ->addColumn('active', function (Department $department) {
+                    return view('architect.datatables.form-active', ['active' => $department->active]);
                 })
                 ->editColumn('created_at', function (Department $department) {
                     return Carbon::parse($department->created_at)->diffForHumans();
                 })
-                ->rawColumns(['edit', 'active'])
+                ->rawColumns(['edit', 'active', 'delete'])
                 ->toJson();
         }
 
@@ -43,7 +45,8 @@ class DepartmentController extends Controller
             ['data' => 'name', 'title' => 'Name'],
             ['data' => 'active', 'title' => 'Status'],
             ['data' => 'created_at', 'title' => 'Created At'],
-            ['data' => 'edit', 'title' => '']
+            ['data' => 'edit', 'title' => ''],
+            ['data' => 'delete', 'title' => '']
         ]);
         return view('architect.department.index', compact('html'));
     }
@@ -67,14 +70,16 @@ class DepartmentController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name' => 'required', 'string', 'unique:outlets,name',
-            'active' => 'in:on'
+            'name' => ['required', 'string', 'unique:departments,name'],
+            'city' => ['required', 'string'],
+            'active' => ['in:on']
         ]);
 
-        $outlet = Department::create([
+        $depart = Department::create([
             'name' => $request->name,
             'active' => $request->has('active') && $request->active == "on" ? true : false,
-            'desc' => $request->desc ?: null
+            'desc' => $request->desc ?: null,
+            'city' => $request->city
         ]);
         return redirect()->route('department.index')->with('status', 'Department has been created.');
     }
@@ -110,7 +115,20 @@ class DepartmentController extends Controller
      */
     public function update(Request $request, Department $department)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string', Rule::unique('departments', 'name')->ignore($department->id)],
+            'city' => ['required', 'string'],
+            'active' => ['in:on']
+        ]);
+
+        $department->update([
+            'name' => $request->name,
+            'city' => $request->city,
+            'active' => $request->active == "on" ? true : false,
+            'desc' => $request->desc
+        ]);
+
+        return redirect()->route('department.index')->with('status', 'Department has been updated.');
     }
 
     /**
@@ -121,6 +139,16 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        //
+        if($department->has('maintenance_users')) {
+            $users = $department->maintenance_users()->pluck('name');
+            return redirect()->route('department.index')->with('failure', "This department has following users associated with it. Please remove them before deleting this department. $users");
+        }
+
+        try {
+            $department->delete();
+            return redirect()->route('department.index')->with('status', "Department $department->name has been deleted.");
+        } catch (\Exception $e) {
+            return redirect()->route('department.index')->with('failure', "Department deletion failied: " . $e->getMessage());
+        }
     }
 }

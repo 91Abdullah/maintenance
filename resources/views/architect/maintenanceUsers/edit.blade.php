@@ -2,21 +2,22 @@
 
 @extends('layouts.architect')
 
-@section('title', 'Departments')
-@section('desc', 'Create a new department model.')
-@section('icon', 'fas fa-ambulance')
+@section('title', 'Maintenance Users')
+@section('desc', "Edit user: $maintenanceUser->name")
+@section('icon', 'fas fa-users-cog')
 
 @section('content')
 
     <div class="main-card mb-3 card">
         <div class="card-body">
-            <form method="post" action="{{ route('department.store') }}">
+            <form method="post" action="{{ route('maintenanceUsers.update', $maintenanceUser->id) }}">
                 @csrf
+                @method('patch')
 
                 <div class="form-group row">
                     <label for="name" class="col-form-label col-sm-2">Name</label>
                     <div class="col-sm-10">
-                        <input name="name" type="text" id="name" placeholder="Name" value="{{ old('name') }}" class="form-control @error('name') is-invalid @enderror" required>
+                        <input name="name" type="text" id="name" placeholder="Name" value="{{ old('name') ?: $maintenanceUser->name }}" class="form-control @error('name') is-invalid @enderror" required>
                         @error('name')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>
@@ -27,15 +28,16 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="active" class="col-form-label col-sm-2">Active</label>
+                    <label for="number" class="col-form-label col-sm-2">Number</label>
                     <div class="col-sm-10">
-                        <input id="active" name="active" class="@error('active') is-invalid @enderror" type="checkbox" data-toggle="toggle" data-onstyle="success" data-offstyle="danger" {{ old('active') ? 'checked' : '' }} required>
-                        @error('active')
+                        <input name="number" type="text" id="number" placeholder="Number" value="{{ old('number') ?: $maintenanceUser->number }}" class="form-control @error('number') is-invalid @enderror" required>
+                        @error('number')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </div>
                         @enderror
                     </div>
+
                 </div>
 
                 <div class="form-group row">
@@ -53,10 +55,14 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="desc" class="col-form-label col-sm-2">Description</label>
+                    <label for="department" class="col-form-label col-sm-2">Department</label>
                     <div class="col-sm-10">
-                        <textarea rows="3" name="desc" id="name" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') }}</textarea>
-                        @error('desc')
+                        <select name="department" id="department" class="form-control singleselect-dropdown @error('department') is-invalid @enderror" required>
+                            @foreach(\App\Department::all() as $department)
+                                <option {{ $maintenanceUser->department->id == $department->id || old('department') == $department->id ? 'selected' : ''  }} value="{{ $department->id }}">{{ $department->name }}</option>
+                            @endforeach
+                        </select>
+                        @error('department')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </div>
@@ -80,12 +86,14 @@
 @push('scripts')
     <script src="{{ asset('assets/scripts/cities.js') }}"></script>
     <script>
+        var selected = "{{ old('city') ?: $maintenanceUser->city }}";
         $(document).ready(function () {
             $('.city-select').select2({
                 placeholder: 'Select City',
                 theme: 'bootstrap4',
                 data: data
             });
+            $('.city-select').val(selected).trigger("change");
         });
     </script>
 @endpush

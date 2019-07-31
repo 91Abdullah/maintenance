@@ -139,6 +139,16 @@ class OutletController extends Controller
      */
     public function destroy(Outlet $outlet)
     {
-        //
+        if($outlet->has('complains')) {
+            $complains = $outlet->complains->pluck('id');
+            return redirect()->route('outlet.index')->with('failure', "This outlet has following complains associated with it. Please disassociate them before deleting. $complains");
+        }
+
+        try {
+            $outlet->delete();
+            return redirect()->route('outlet.index')->with('status', "Outlet $outlet->name has been deleted.");
+        } catch (\Exception $e) {
+            return redirect()->route('outlet.index')->with('failure', "Outlet deletion failed. " . $e->getMessage());
+        }
     }
 }

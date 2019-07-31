@@ -25,40 +25,64 @@ class ComplainController extends Controller
     public function index(Builder $builder)
     {
         if(request()->ajax()) {
-            $query = Complain::all();
-            return DataTables::of($query)
-                ->addColumn('edit', function (Complain $complain) {
-                    return view('architect.datatables.form-edit', ['model' => $complain, 'route' => 'complain']);
-                })
-                ->addColumn('class', function (Complain $complain) {
-                    return Carbon::now()->diffInMinutes($complain->created_at) <= 1 ? true : false;
-                })
-                ->editColumn('id', function (Complain $complain) {
-                    return $complain->getComplainNumber();
-                })
-                ->editColumn('outlet_id', function (Complain $complain) {
-                    return $complain->outlet->name;
-                })
-                ->editColumn('customer_name', function (Complain $complain) {
-                    return $complain->customer->name;
-                })
-                ->editColumn('customer_number', function (Complain $complain) {
-                    return $complain->customer->number;
-                })
-                ->editColumn('ticket_status_id', function (Complain $complain) {
-                    return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
-                })
-                ->editColumn('user_id', function (Complain $complain) {
-                    return $complain->created_by->name;
-                })
-                ->editColumn('issue_id', function (Complain $complain) {
-                    return view('architect.datatables.issues', ['issues' => $complain->issues]);
-                })
-                ->rawColumns(['edit', 'ticket_status_id', 'issue_id'])
-                ->toJson();
+            $query = Complain::query();
+            return $this->getQuery($query);
         }
 
         return view('architect.complain.index');
+    }
+
+    public function search(Request $request)
+    {
+        if(request()->ajax() && $request->isMethod('post')) {
+            $q = ltrim($request->q, "0");
+            $query = Complain::where("id", "like", "%$q%")->get();
+            return $this->getQuery($query);
+        } else {
+            return abort(403);
+        }
+    }
+
+    public function getQuery($query)
+    {
+        return DataTables::of($query)
+            ->addColumn('edit', function (Complain $complain) {
+                return view('architect.datatables.form-edit', ['model' => $complain, 'route' => 'complain']);
+            })
+            ->addColumn('class', function (Complain $complain) {
+                return Carbon::now()->diffInMinutes($complain->created_at) <= 1 ? true : false;
+            })
+            ->editColumn('id', function (Complain $complain) {
+                return "<a href='" . route('complain.show', $complain->id) . "' class='btn-link'>" . $complain->getComplainNumber() . "</a>";
+            })
+            ->editColumn('outlet_id', function (Complain $complain) {
+                return $complain->outlet->name;
+            })
+            ->editColumn('maintenance_user_id', function (Complain $complain) {
+                return $complain->maintenance_user->name;
+            })
+            ->editColumn('customer_name', function (Complain $complain) {
+                return $complain->customer->name;
+            })
+            ->editColumn('customer_number', function (Complain $complain) {
+                return $complain->customer->number;
+            })
+            ->editColumn('ticket_status_id', function (Complain $complain) {
+                return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
+            })
+            ->editColumn('user_id', function (Complain $complain) {
+                return $complain->created_by->name;
+            })
+            ->editColumn('issue_id', function (Complain $complain) {
+                return view('architect.datatables.issues', ['issues' => $complain->issues]);
+            })
+            ->rawColumns(['edit', 'ticket_status_id', 'issue_id', 'id'])
+            ->toJson();
+    }
+
+    public function showSearch()
+    {
+        return view('architect.complain.search');
     }
 
     public function export()
@@ -91,8 +115,10 @@ class ComplainController extends Controller
             'title' => ['nullable', 'string'],
             'order_id' => ['nullable'],
             'outlet_id' => ['required', 'exists:outlets,id'],
+            'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
             'issue_id' => ['array', 'required', 'exists:issues,id'],
-            'ticket_status_id' => ['required', 'exists:ticket_statuses,id']
+            'ticket_status_id' => ['required', 'exists:ticket_statuses,id'],
+            'informed_by' => ['required', 'string']
         ]);
 
         if($request->customer_id !== null) {
@@ -110,29 +136,31 @@ class ComplainController extends Controller
         $complain->customer_id = $customer->id;
         $complain->desc = $request->desc;
         $complain->remarks = $request->remarks;
+        $complain->informed_by = $request->informed_by;
+        $complain->maintenance_user_id = $request->maintenance_user_id;
         $complain->save();
 
         $complain->issues()->sync($request->issue_id);
 
-        return redirect()->route('complain.index')->with('status', "Complain has been created with number: $complain->id");
+        return redirect()->route('complain.index')->with('status', "Complain has been created with number: " . $complain->getComplainNumber());
 
     }
 
     /**
      * Display the specified resource.
      *
-     * @param  \App\Backend\Complain  $complain
+     * @param  \App\Complain  $complain
      * @return \Illuminate\Http\Response
      */
     public function show(Complain $complain)
     {
-        //
+        return view('architect.complain.show', compact('complain'));
     }
 
     /**
      * Show the form for editing the specified resource.
      *
-     * @param  \App\Backend\Complain  $complain
+     * @param  \App\Complain  $complain
      * @return \Illuminate\Http\Response
      */
     public function edit(Complain $complain)
@@ -144,7 +172,7 @@ class ComplainController extends Controller
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Backend\Complain  $complain
+     * @param  \App\Complain  $complain
      * @return \Illuminate\Http\Response
      */
     public function update(Request $request, Complain $complain)
@@ -156,8 +184,10 @@ class ComplainController extends Controller
             "title" => ["string"],
             "order_id" => ["nullable"],
             "outlet_id" => ["required", "exists:outlets,id"],
+            'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
             "issue_id" => ["array", "required", "exists:issues,id"],
-            "ticket_status_id" => ["required", "exists:ticket_statuses,id"]
+            "ticket_status_id" => ["required", "exists:ticket_statuses,id"],
+            'resolved_by' => ['required', 'string'],
         ]);
 
         if($request->customer_name !== $complain->customer->name ||
@@ -177,6 +207,8 @@ class ComplainController extends Controller
         $complain->customer_id = $request->customer_id;
         $complain->desc = $request->desc;
         $complain->remarks = $request->remarks;
+        $complain->resolved_by = $request->resolved_by;
+        $complain->maintenance_user_id = $request->maintenance_user_id;
         $complain->update();
 
         $complain->issues()->sync($request->issue_id);
@@ -187,7 +219,7 @@ class ComplainController extends Controller
     /**
      * Remove the specified resource from storage.
      *
-     * @param  \App\Backend\Complain  $complain
+     * @param  \App\Complain  $complain
      * @return \Illuminate\Http\Response
      */
     public function destroy(Complain $complain)

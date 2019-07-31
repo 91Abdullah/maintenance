@@ -41,4 +41,9 @@ class Complain extends Model
     {
         return $this->belongsTo('App\User', 'user_id', 'id');
     }
+
+    public function maintenance_user()
+    {
+        return $this->belongsTo('App\MaintenanceUser', 'maintenance_user_id', 'id');
+    }
 }

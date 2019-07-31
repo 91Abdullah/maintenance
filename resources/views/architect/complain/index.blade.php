@@ -25,10 +25,11 @@
             <table style="width: 100%;" id="dataTable" class="table table-bordered">
                 <thead>
                     <tr>
-                        <th>Complain #</th>
-                        <th>Order ID</th>
+                        <th>#</th>
+                        <th>Order#</th>
                         <th>Customer</th>
-                        <th>Customer #</th>
+                        <th>Customer#</th>
+                        <th>Maintenance</th>
                         <th>Outlet</th>
                         <th>Title</th>
                         <th>Status</th>
@@ -81,6 +82,7 @@
                 {'data' : 'customer_name', 'title' : 'Customer'},
                 {'data' : 'customer_number', 'title' : 'Customer #'},
                 {'data' : 'outlet_id', 'title' : 'Outlet'},
+                {'data' : 'maintenance_user_id', 'title' : 'Maintenance'},
                 {'data' : 'title', 'title' : 'Title'},
                 {'data' : 'ticket_status_id', 'title' : 'Status'},
                 {'data' : 'issue_id', 'title' : 'Issue(s)'},

@@ -24,6 +24,9 @@ class ComplainSeeder extends Seeder
             $complain->ticket_status_id = \Illuminate\Support\Arr::random(\App\TicketStatus::pluck('id')->toArray());
             $complain->user_id = \Illuminate\Support\Arr::random(\App\User::pluck('id')->toArray());
             $complain->customer_id = \Illuminate\Support\Arr::random(\App\Customer::pluck('id')->toArray());
+            $complain->maintenance_user_id = \Illuminate\Support\Arr::random(\App\MaintenanceUser::pluck('id')->toArray());
+            $complain->informed_by = $faker->firstName;
+            $complain->resolved_by = $faker->firstNameMale;
             $complain->desc = $faker->text;
             $complain->remarks = $faker->slug;
             $complain->created_at = $faker->dateTimeThisMonth;

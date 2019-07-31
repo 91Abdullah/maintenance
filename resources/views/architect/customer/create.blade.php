@@ -4,7 +4,7 @@
 
 @section('title', 'Customer')
 @section('desc', 'Create a new customer.')
-@section('icon', 'fa fa-address-card')
+@section('icon', 'fas fa-users')
 
 @section('content')
 

@@ -4,7 +4,7 @@
 
 @section('title', 'Outlets')
 @section('desc', 'Create a new outlet model.')
-@section('icon', 'fas fa-shopping-bag')
+@section('icon', 'fas fa-university')
 
 
 
@@ -40,7 +40,6 @@
                         </div>
                         @enderror
                     </div>
-
                 </div>
 
                 <div class="form-group row">

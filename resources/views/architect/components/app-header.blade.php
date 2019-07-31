@@ -1,6 +1,6 @@
-<div class="app-header header-shadow bg-night-sky header-text-light">
+<div class="app-header header-shadow bg-midnight-bloom header-text-light">
     <div class="app-header__logo">
-        <div class="logo-src"></div>
+        <a href="{{ url("/") }}" class="logo-src"></a>
         <div class="header__pane ml-auto">
             <div>
                 <button type="button" class="hamburger close-sidebar-btn hamburger--elastic" data-class="closed-sidebar">
@@ -31,13 +31,7 @@
     </div>
     <div class="app-header__content">
         <div class="app-header-left">
-            <div class="search-wrapper">
-                <div class="input-holder">
-                    <input type="text" class="search-input" placeholder="Type to search">
-                    <button class="search-icon"><span></span></button>
-                </div>
-                <button class="close"></button>
-            </div>
+            {{--@include('architect.components.app-search')--}}
 
             {{--@include('architect.components.header-nav')--}}
 

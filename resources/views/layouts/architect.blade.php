@@ -54,14 +54,18 @@
 
                 @if(session('status'))
                     <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h5 class="alert-heading">Success!</h5>
+                        <hr>
+                        <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                         {{ session('status') }}
                     </div>
                 @endif
 
                 @if(session('failure'))
                     <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <button type="button" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                        <h5 class="alert-heading">Request Failed!</h5>
+                        <hr>
+                        <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
                         {{ session('failure') }}
                     </div>
                 @endif

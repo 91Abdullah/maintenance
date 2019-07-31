@@ -19,10 +19,13 @@ class CreateComplainsTable extends Migration
             $table->text('desc')->nullable();
             $table->string('remarks')->nullable();
             $table->string('title')->nullable();
+            $table->string('informed_by');
+            $table->string('resolved_by')->nullable();
 
             $table->unsignedBigInteger('outlet_id');
             $table->unsignedBigInteger('ticket_status_id');
             $table->unsignedBigInteger('user_id');
+            $table->unsignedBigInteger('maintenance_user_id');
             $table->unsignedBigInteger('customer_id');
             $table->softDeletes();
             $table->timestamps();

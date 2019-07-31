@@ -1,8 +1,8 @@
 @extends('layouts.architect')
 
-@section('title', 'Issues')
-@section('desc', 'Backend application list of issues management.')
-@section('icon', 'fas fa-question-circle')
+@section('title', 'Maintenance Users')
+@section('desc', 'Backend application maintenance user management.')
+@section('icon', 'fas fa-users-cog')
 
 @push('styles')
     <link rel="stylesheet" type="text/css" href="https://cdn.datatables.net/v/bs4/jszip-2.5.0/dt-1.10.18/b-1.5.6/b-colvis-1.5.6/b-flash-1.5.6/b-html5-1.5.6/b-print-1.5.6/datatables.min.css"/>
@@ -11,8 +11,8 @@
 @section('content')
 
     <div class="main-card mb-3 card">
-        <div class="card-body">
-            {!! $html->table() !!}
+        <div class="card-body table-responsive">
+            {!! $html->table(['class' => 'table table-hover', 'style' => 'width: 100%;']) !!}
         </div>
     </div>
 

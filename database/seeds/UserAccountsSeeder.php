@@ -35,8 +35,7 @@ class UserAccountsSeeder extends Seeder
             ['name' => 'superadmin', 'desc' => 'Super Admin'],
             ['name' => 'admin', 'desc' => 'Administrator'],
             ['name' => 'agent', 'desc' => 'Agent'],
-            ['name' => 'supervisor', 'desc' => 'Supervisor'],
-            ['name' => 'rating', 'desc' => 'Rating User']
+            ['name' => 'supervisor', 'desc' => 'Supervisor']
         ];
 
         DB::table('roles')->insert($rolesData);

@@ -41,6 +41,18 @@
                 </div>
 
                 <div class="form-group row">
+                    <label for="resolved_by" class="col-form-label col-sm-2">Resolved By <sup style="color:red;">*</sup></label>
+                    <div class="col-sm-10">
+                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') }}" class="form-control @error('resolved_by') is-invalid @enderror" required>
+                        @error('resolved_by')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label for="title" class="col-form-label col-sm-2">Complain Title</label>
                     <div class="col-sm-10">
                         <input name="title" type="text" id="title" placeholder="Title" value="{{ old('title') ?: $complain->title }}" class="form-control @error('title') is-invalid @enderror">
@@ -54,16 +66,20 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="order_id" class="col-form-label col-sm-2">Order Number</label>
+                    <label for="maintenance_user_id" class="col-form-label col-sm-2">Maintenance User <sup style="color:red;">*</sup></label>
                     <div class="col-sm-10">
-                        <input name="order_id" type="text" id="order_id" placeholder="Order Number" value="{{ old('order_id') ?: $complain->order_id }}" class="form-control @error('order_id') is-invalid @enderror">
-                        @error('order_id')
+                        <select class="form-control singleselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id" id="maintenance_user_id" required>
+                            <option></option>
+                            @foreach(\App\MaintenanceUser::pluck('name', 'id') as $index => $maintenanceUser)
+                                <option {{ $complain->maintenance_user->id == $index || old('maintenance_user_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $maintenanceUser }}</option>
+                            @endforeach
+                        </select>
+                        @error('maintenance_user_id')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>
                         </div>
                         @enderror
                     </div>
-
                 </div>
 
                 <div class="form-group row">
