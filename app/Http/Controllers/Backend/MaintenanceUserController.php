@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\Department;
 use App\MaintenanceUser;
 use Illuminate\Http\Request;
@@ -68,7 +69,7 @@ class MaintenanceUserController extends Controller
     {
         $request->validate([
             'name' => ['required', 'string'],
-            'number' => ['required', 'digits:'],
+            'number' => ['required', 'digits:11', 'starts_with:03'],
             'city' => ['required', 'string'],
             'department' => ['required', 'exists:departments,id']
         ]);
@@ -134,9 +135,11 @@ class MaintenanceUserController extends Controller
      */
     public function destroy(MaintenanceUser $maintenanceUser)
     {
-        if($maintenanceUser->has('complains')) {
-            $complains = $maintenanceUser->complains->pluck('id');
-            return redirect()->route('maintenanceUsers.index')->with('failure', "User has following complains associated with them. Please unassign them from complains and then delete. $complains");
+        if($maintenanceUser->complains()->count() > 0) {
+            $complains = $maintenanceUser->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('maintenanceUsers.index')->with('failure', "This user has following complains associated with them. Please disassociate them before deleting. $complains")->with('links', $complains);
         }
 
         try {

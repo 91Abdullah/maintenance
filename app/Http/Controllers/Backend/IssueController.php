@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\Issue;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -130,6 +131,13 @@ class IssueController extends Controller
      */
     public function destroy(Issue $issue)
     {
+        if($issue->complains()->count() > 0) {
+            $complains = $issue->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('issue.index')->with('failure', "This complaint type has following complains associated with it. Please disassociate them before deleting. $complains")->with('links', $complains);
+        }
+
         try {
             $issue->delete();
         } catch (\Exception $e) {

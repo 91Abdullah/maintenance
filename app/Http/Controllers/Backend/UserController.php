@@ -157,7 +157,7 @@ class UserController extends Controller
             abort(403, "Sorry! an admin can't delete an admin");
         }
 
-        if($user->has('complains')) {
+        if($user->complains()->count() > 0) {
             $complains = $user->complains;
             $admins = Role::getAdmins()->pluck("id")->toArray();
             foreach ($complains as $complain) {
@@ -168,7 +168,7 @@ class UserController extends Controller
 
         try {
             $user->delete();
-            return redirect()->route('users.index')->with('success', "User $user->name has been deleted.");
+            return redirect()->route('users.index')->with('success', "User $user->name has been deleted. All complains assigned to this user has been transferred to Administrators: $admins");
         } catch (\Exception $e) {
             return redirect()->route('users.index')->with('failure', $e->getMessage());
         }

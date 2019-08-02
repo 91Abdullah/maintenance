@@ -3,7 +3,7 @@
 @extends('layouts.architect')
 
 @section('title', 'Complains')
-@section('desc', 'Edit complain / ticket #.' . $complain->id)
+@section('desc', 'Edit Complain / Ticket# ' . $complain->getComplainNumber())
 @section('icon', 'pe-7s-comment')
 
 @section('content')
@@ -14,13 +14,13 @@
                 @method('patch')
                 @csrf
 
-                <input type="hidden" value="{{ $complain->customer->id }}" name="customer_id">
+                <input type="hidden" value="{{ $complain->customer->id ?? "" }}" name="customer_id">
 
                 <div class="form-group">
                     <div class="row">
                         <label for="customer_name" class="col-form-label col-sm-2">Customer Name <sup style="color:red;">*</sup></label>
                         <div class="col-sm-4">
-                            <input name="customer_name" type="text" id="customer_name" placeholder="Customer Name" value="{{ old('customer_name') ?: $complain->customer->name }}" class="form-control @error('customer_name') is-invalid @enderror">
+                            <input name="customer_name" type="text" id="customer_name" placeholder="Customer Name" value="{{ old('customer_name') ?: $complain->customer->name ?? "" }}" class="form-control @error('customer_name') is-invalid @enderror">
                             @error('customer_name')
                             <div class="invalid-feedback">
                                 <strong>{{ $message }}</strong>
@@ -30,7 +30,7 @@
 
                         <label for="customer_number" class="col-form-label col-sm-2">Customer Number <sup style="color:red;">*</sup></label>
                         <div class="col-sm-4">
-                            <input name="customer_number" type="text" id="customer_number" placeholder="Customer Number" value="{{ old('customer_number') ?: $complain->customer->number }}" class="form-control @error('customer_number') is-invalid @enderror">
+                            <input name="customer_number" type="text" id="customer_number" placeholder="Customer Number" value="{{ old('customer_number') ?: $complain->customer->number ?? "" }}" class="form-control @error('customer_number') is-invalid @enderror">
                             @error('customer_number')
                             <div class="invalid-feedback">
                                 <strong>{{ $message }}</strong>
@@ -41,9 +41,9 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="resolved_by" class="col-form-label col-sm-2">Resolved By <sup style="color:red;">*</sup></label>
+                    <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>
                     <div class="col-sm-10">
-                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') }}" class="form-control @error('resolved_by') is-invalid @enderror" required>
+                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') }}" class="form-control @error('resolved_by') is-invalid @enderror">
                         @error('resolved_by')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>

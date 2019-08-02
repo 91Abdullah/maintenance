@@ -284,6 +284,10 @@
                             <i class="metismenu-icon pe-7s-note2"></i>
                             Activity Logs
                         </a>
+                        <a href="{{ route('report.login') }}" class="{{ request()->is('*reports/login') ? 'mm-active' : '' }}">
+                            <i class="metismenu-icon lnr-users"></i>
+                            Login
+                        </a>
                     </li>
                 @endcan
             </ul>

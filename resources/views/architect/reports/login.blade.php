@@ -1,7 +1,7 @@
 @extends('layouts.architect')
 
-@section('title', 'Report - Complains')
-@section('icon', 'lnr-database')
+@section('title', 'Report - Login')
+@section('icon', 'lnr-users')
 
 @push('styles')
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
@@ -14,11 +14,11 @@
         <div class="main-card mb-3 card">
             <div class="card-header">
                 <button type="button" data-toggle="collapse" data-target="#collapseOne" aria-expanded="false" aria-controls="collapseOne" class="text-left m-0 p-0 btn btn-link btn-block collapsed">
-                    <h5 class="m-0 p-0">Select Filters</h5>
+                    <span class="m-0 p-0 font-size-xlg">Select Filters</span>
                 </button>
             </div>
             <div class="card-body collapse show" id="collapseOne" aria-labelledby="headingOne" data-parent="#accordionExample">
-                <form method="post" id="submitReport" action="{{ route('report.complain.post') }}">
+                <form method="post" id="submitReport" action="{{ route('report.login.post') }}">
 
                     <input id="from_datetime" type="hidden" value="{{ old('from_datetime') }}" name="from_datetime">
                     <input id="to_datetime" type="hidden" value="{{ old('to_datetime') }}" name="to_datetime">
@@ -30,47 +30,13 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="id" class="col-form-label col-sm-2">Complain ID</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="id" type="text" name="id" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="order_id" class="col-form-label col-sm-2">Order ID</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="order_id" type="text" name="order_id" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="customer_name" class="col-form-label col-sm-2">Customer Name</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="customer_name" type="text" name="customer_name" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="outlet_id" class="col-form-label col-sm-2">Outlet</label>
-                        <div class="col-sm-10">
-                            <select class="multiselect-dropdown form-control" id="outlet_id" name="outlet_id[]" multiple>
-                                @foreach(\App\Outlet::pluck('name', 'id') as $index => $name)
-                                    <option {{ old('outlet_id') == $index ? 'selected' : '' }} value="{{ $index }}">{{ $name }}</option>
-                                @endforeach
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="user_id" class="col-form-label col-sm-2">Created By</label>
+                        <label for="user_id" class="col-form-label col-sm-2">User(s)</label>
                         <div class="col-sm-10">
                             <select multiple class="multiselect-dropdown form-control" id="user_id" name="user_id[]">
-                                @foreach(\App\User::pluck('name', 'id') as $index => $name)
+                                @foreach(\App\User::whereNotIn('username', ['nimda', 'admin'])->pluck('name', 'id') as $index => $name)
                                     <option value="{{ $index }}">{{ $name }}</option>
                                 @endforeach
                             </select>
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="title" class="col-form-label col-sm-2">Complaint Title</label>
-                        <div class="col-sm-10">
-                            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -100,24 +66,16 @@
             <table id="datatable" style="width: 100%;" class="table table-borderless table-striped">
                 <thead>
                 <tr>
-                    <th>Complain #</th>
-                    <th>Customer</th>
-                    <th>Customer #</th>
-                    <th>Outlet</th>
-                    <th>Title</th>
-                    <th>Status</th>
-                    <th>Issue(s)</th>
-                    <th>Created</th>
-                    <th>Created By</th>
+                    <th>#</th>
+                    <th>IP Address</th>
+                    <th>User Agent</th>
+                    <th>Session</th>
+                    <th>Login Time</th>
+                    <th>Logout Time</th>
+                    <th>Duration (mins)</th>
+                    <th>User</th>
                 </tr>
                 </thead>
-                {{--<tbody>
-                <tr>
-                    <td colspan="10" class="font-size-lg font-weight-bold text-center">
-                        Apply filters to display data.
-                    </td>
-                </tr>
-                </tbody>--}}
             </table>
         </div>
     </div>
@@ -136,15 +94,14 @@
             let table = undefined;
             $.fn.dataTable.ext.errMode = 'none';
             let columns = [
-                {'data' : 'id', 'title' : 'Complain #'},
-                {'data' : 'customer_name', 'title' : 'Customer'},
-                {'data' : 'customer_number', 'title' : 'Customer #'},
-                {'data' : 'outlet_id', 'title' : 'Outlet'},
-                {'data' : 'title', 'title' : 'Title'},
-                {'data' : 'ticket_status_id', 'title' : 'Status'},
-                {'data' : 'issue_id', 'title' : 'Issue(s)'},
-                {'data' : 'created_at', 'title' : 'Created'},
-                {'data' : 'user_id', 'title' : 'Created By'}
+                {'data' : 'id', 'title' : '#'},
+                {'data' : 'ip_address', 'title' : 'IP Address'},
+                {'data' : 'user_agent', 'title' : 'User Agent'},
+                {'data' : 'session_id', 'title' : 'Session'},
+                {'data' : 'login_time', 'title' : 'Login Time'},
+                {'data' : 'logout_time', 'title' : 'Logout Time'},
+                {'data' : 'duration', 'title' : 'Duration (mins)'},
+                {'data' : 'user_id', 'title' : 'User'}
             ];
 
             let start = moment().startOf('day');
@@ -178,16 +135,12 @@
                     serverSide: true,
                     destroy: true,
                     ajax: {
-                        url: "{!! route('report.complain.post') !!}",
+                        url: "{!! route('report.login.post') !!}",
                         method: "post",
                         data: {
                             datetimes: document.getElementById('datetimes').value,
-                            id: document.getElementById("id").value,
-                            order_id: document.getElementById("order_id").value,
-                            customer_name: document.getElementById("customer_name").value,
-                            outlet_id: $("#outlet_id").val(),
+                            paginate: document.getElementById("paginate").value,
                             user_id: $("#user_id").val(),
-                            title: document.getElementById("title").value
                         }
                         /*success: (result, response, xhr) => {
                             console.log(result, response, xhr);
@@ -197,7 +150,7 @@
                     buttons: [
                         'colvis', 'pageLength','copy', 'csv', 'excel', 'pdf', 'print',
                     ],
-                    order: [[8, 'desc']],
+                    order: [[0, 'desc']],
                     columns: columns,
                     responsive: true,
                     pageLength: paginate === "All" ? -1 : parseInt(document.getElementById("paginate").value),

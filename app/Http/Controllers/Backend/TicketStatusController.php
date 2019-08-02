@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\TicketStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
@@ -131,6 +132,13 @@ class TicketStatusController extends Controller
      */
     public function destroy(TicketStatus $ticketStatus)
     {
+        if($ticketStatus->complains()->count() > 0) {
+            $complains = $ticketStatus->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('ticketStatus.index')->with('failure', "This ticket status has following complains associated with it. Please disassociate them before deleting. $complains")->with('links', $complains);
+        }
+
         try {
             $ticketStatus->delete();
         } catch (\Exception $e) {

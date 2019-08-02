@@ -18,9 +18,9 @@
                 @csrf
 
                 <div class="form-group row">
-                    <label for="name" class="col-form-label col-sm-2">Search Customer</label>
+                    <label for="search_customer" class="col-form-label col-sm-2">Search Customer</label>
                     <div class="col-sm-10">
-                        <select class="form-control" type="text" id="search_customer">
+                        <select name="search_customer" class="form-control" type="text" id="search_customer">
                             <option></option>
                         </select>
                     </div>
@@ -36,7 +36,7 @@
 
                 <div class="form-group">
                     <div class="row">
-                        <label for="name" class="col-form-label col-sm-2">Customer Name <sup style="color:red;">*</sup></label>
+                        <label for="customer_name" class="col-form-label col-sm-2">Customer Name <sup style="color:red;">*</sup></label>
                         <div class="col-sm-4">
                             <input name="customer_name" type="text" id="customer_name" placeholder="Customer Name" value="{{ old('customer_name') }}" class="form-control @error('customer_name') is-invalid @enderror">
                             @error('customer_name')
@@ -46,7 +46,7 @@
                             @enderror
                         </div>
 
-                        <label for="name" class="col-form-label col-sm-2">Customer Number <sup style="color:red;">*</sup></label>
+                        <label for="customer_number" class="col-form-label col-sm-2">Customer Number <sup style="color:red;">*</sup></label>
                         <div class="col-sm-4">
                             <input name="customer_number" type="text" id="customer_number" placeholder="Customer Number" value="{{ old('customer_number') }}" class="form-control @error('customer_number') is-invalid @enderror">
                             @error('customer_number')

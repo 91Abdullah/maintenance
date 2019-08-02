@@ -49,7 +49,7 @@ class ComplainReportController extends Controller
 
             return DataTables::of($query->get())
                 ->editColumn('id', function (Complain $complain) {
-                    return $complain->getComplainNumber();
+                    return "<a class='btn-link' href='" . route('complain.show', $complain->id) . "'>". $complain->getComplainNumber() ."</a>";
                 })
                 ->editColumn('outlet_id', function (Complain $complain) {
                     return $complain->outlet->name;
@@ -69,7 +69,7 @@ class ComplainReportController extends Controller
                 ->editColumn('issue_id', function (Complain $complain) {
                     return view('architect.datatables.issues', ['issues' => $complain->issues]);
                 })
-                ->rawColumns(['edit', 'ticket_status_id', 'issue_id'])
+                ->rawColumns(['edit', 'ticket_status_id', 'issue_id', 'id'])
                 ->toJson();
         } else {
             return response()->json([], 401);

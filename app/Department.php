@@ -15,7 +15,7 @@ class Department extends Model
 
     public function complains()
     {
-        return $this->hasMany('App\Complain');
+        return $this->hasManyThrough('App\Complain', 'App\MaintenanceUser');
     }
 
     public function maintenance_users()

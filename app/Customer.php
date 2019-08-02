@@ -13,6 +13,11 @@ class Customer extends Model
     protected static $logAttributes = ['*'];
     protected $fillable = ['name', 'number', 'active'];
 
+    public function setActiveAttribute($value)
+    {
+        $this->attributes['active'] = $value == "on" ? true : false;
+    }
+
     public function ratings()
     {
         return $this->hasMany('App\Rating');

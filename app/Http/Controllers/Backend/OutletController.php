@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\Outlet;
 use App\User;
 use Carbon\Carbon;
@@ -139,9 +140,11 @@ class OutletController extends Controller
      */
     public function destroy(Outlet $outlet)
     {
-        if($outlet->has('complains')) {
-            $complains = $outlet->complains->pluck('id');
-            return redirect()->route('outlet.index')->with('failure', "This outlet has following complains associated with it. Please disassociate them before deleting. $complains");
+        if($outlet->complains()->count() > 0) {
+            $complains = $outlet->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('outlet.index')->with('failure', "This outlet has following complains associated with it. Please disassociate them before deleting. $complains")->with('links', $complains)->with('links', $complains);
         }
 
         try {

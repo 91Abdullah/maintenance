@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\Department;
+use App\MaintenanceUser;
 use App\Outlet;
 use Carbon\Carbon;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
@@ -139,9 +141,11 @@ class DepartmentController extends Controller
      */
     public function destroy(Department $department)
     {
-        if($department->has('maintenance_users')) {
-            $users = $department->maintenance_users()->pluck('name');
-            return redirect()->route('department.index')->with('failure', "This department has following users associated with it. Please remove them before deleting this department. $users");
+        if($department->complains()->count() > 0) {
+            $complains = $department->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('department.index')->with('failure', "This department $department->name has users who are assigned with complains associated with them. Please disassociate them before deleting.")->with('links', $complains);
         }
 
         try {

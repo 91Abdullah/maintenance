@@ -60,12 +60,19 @@ Route::prefix('backend')->middleware(['auth'])->group(function () {
             Route::view('/', 'architect.reports.complains')->name('report.complain.get');
             Route::post('report', 'ComplainReportController@report')->name('report.complain.post');
         });
+
         /*Route::prefix('ratings')->group(function () {
             Route::view('/', 'architect.reports.ratings')->name('report.rating.get');
             Route::post('report', 'RatingReportController@report')->name('report.rating.post');
         });*/
+
         Route::prefix('activity')->group(function () {
             Route::get('/', 'ActivityReportController@index')->name('report.activity');
+        });
+
+        Route::prefix('login')->group(function () {
+            Route::get('/', 'LoginReportController@index')->name('report.login');
+            Route::post('report', 'LoginReportController@report')->name('report.login.post');
         });
     });
 

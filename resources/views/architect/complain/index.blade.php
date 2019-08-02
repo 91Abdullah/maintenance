@@ -26,10 +26,9 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Order#</th>
                         <th>Customer</th>
                         <th>Customer#</th>
-                        <th>Maintenance</th>
+                        <th>Maint User</th>
                         <th>Outlet</th>
                         <th>Title</th>
                         <th>Status</th>
@@ -78,11 +77,10 @@
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             columns: [
                 {'data' : 'id', 'title' : 'Complain #'},
-                {'data' : 'order_id', 'title' : 'Order #'},
                 {'data' : 'customer_name', 'title' : 'Customer'},
                 {'data' : 'customer_number', 'title' : 'Customer #'},
                 {'data' : 'outlet_id', 'title' : 'Outlet'},
-                {'data' : 'maintenance_user_id', 'title' : 'Maintenance'},
+                {'data' : 'maintenance_user_id', 'title' : 'Maint User'},
                 {'data' : 'title', 'title' : 'Title'},
                 {'data' : 'ticket_status_id', 'title' : 'Status'},
                 {'data' : 'issue_id', 'title' : 'Issue(s)'},

@@ -9,6 +9,11 @@
 @section('content')
 
     <div class="main-card mb-3 card">
+        <div class="card-header">
+            <div class="btn-actions-pane-left">
+                <a href="{{ route('complain.edit', $complain->id) }}" class="btn btn-primary text-white btn-lg"><i class="fas fa-user-edit"></i> Edit</a>
+            </div>
+        </div>
         <div class="card-body">
 
             <ul class="list-group">
@@ -18,7 +23,11 @@
                 </li>
                 <li class="list-group-item">
                     <span>Customer Name </span>
-                    <span class="font-weight-bold">{{ $complain->customer->name }}</span>
+                    <span class="font-weight-bold">{{ $complain->customer->name ?? "DELETED" }}</span>
+                </li>
+                <li class="list-group-item">
+                    <span>Customer Number </span>
+                    <span class="font-weight-bold">{{ $complain->customer->number ?? "DELETED" }}</span>
                 </li>
                 <li class="list-group-item">
                     <span>Outlet </span>
@@ -52,7 +61,7 @@
                 </li>
                 <li class="list-group-item">
                     <span>Resolved By </span>
-                    <span class="font-weight-bold">{{ $complain->resolved_by == null ?: "Unresolved" }}</span>
+                    <span class="font-weight-bold {{ $complain->resolved_by == null ? "text-danger" : "text-primary" }}">{{ $complain->resolved_by ?? "Unresolved" }}</span>
                 </li>
             </ul>
 

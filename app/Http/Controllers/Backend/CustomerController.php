@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Backend;
 
+use App\Complain;
 use App\Customer;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -70,6 +71,7 @@ class CustomerController extends Controller
         ]);
 
         $customer = Customer::create($request->all());
+        return redirect()->route('customer.index')->with('status', "Customer $customer->name has been created.");
     }
 
     /**
@@ -103,7 +105,14 @@ class CustomerController extends Controller
      */
     public function update(Request $request, Customer $customer)
     {
-        //
+        $request->validate([
+            'name' => ['required', 'string'],
+            'number' => ['required', 'numeric'],
+            'active' => ['nullable', 'in:on']
+        ]);
+
+        $customer->update($request->all());
+        return redirect()->route('customer.index')->with('status', "Customer $customer->name has been updated.");
     }
 
     /**
@@ -114,6 +123,13 @@ class CustomerController extends Controller
      */
     public function destroy(Customer $customer)
     {
+        if($customer->complains()->count() > 0) {
+            $complains = $customer->complains->map(function (Complain $complain) {
+                return $complain->getComplainNumber();
+            });
+            return redirect()->route('customer.index')->with('failure', "This customer has following complains associated with them. Please disassociate them before deleting. $complains")->with('links', $complains);
+        }
+
         try {
             $customer->delete();
         } catch (\Exception $e) {

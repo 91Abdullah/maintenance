@@ -37,6 +37,11 @@ class Complain extends Model
         return $this->belongsTo('App\Customer', 'customer_id', 'id');
     }
 
+    public function department()
+    {
+        return $this->belongsTo('App\Department', 'department_id', 'id');
+    }
+
     public function created_by()
     {
         return $this->belongsTo('App\User', 'user_id', 'id');

@@ -62,10 +62,10 @@ class ComplainController extends Controller
                 return $complain->maintenance_user->name;
             })
             ->editColumn('customer_name', function (Complain $complain) {
-                return $complain->customer->name;
+                return $complain->customer->name ?? "DELETED";
             })
             ->editColumn('customer_number', function (Complain $complain) {
-                return $complain->customer->number;
+                return $complain->customer->number ?? "DELETED";
             })
             ->editColumn('ticket_status_id', function (Complain $complain) {
                 return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
@@ -110,7 +110,7 @@ class ComplainController extends Controller
     {
         $request->validate([
             'customer_name' => ['required', 'string'],
-            'customer_number' => ['required'],
+            'customer_number' => ['required', 'numeric'],
             'customer_id' => ['nullable', 'exists:customers,id'],
             'title' => ['nullable', 'string'],
             'order_id' => ['nullable'],
@@ -124,7 +124,10 @@ class ComplainController extends Controller
         if($request->customer_id !== null) {
             $customer = Customer::findOrFail($request->customer_id);
         } else {
-            $customer = Customer::create($request->only(['customer_name', 'customer_number']));
+            $customer = Customer::create([
+                'name' => $request->customer_name,
+                'number' => $request->customer_number
+            ]);
         }
 
         $complain = new Complain();
@@ -179,7 +182,7 @@ class ComplainController extends Controller
     {
         $request->validate([
             "customer_name" => ["required", "string"],
-            "customer_number" => ["required", "string"],
+            "customer_number" => ["required", "numeric"],
             "customer_id" => ["required", "exists:customers,id"],
             "title" => ["string"],
             "order_id" => ["nullable"],
@@ -187,7 +190,7 @@ class ComplainController extends Controller
             'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
             "issue_id" => ["array", "required", "exists:issues,id"],
             "ticket_status_id" => ["required", "exists:ticket_statuses,id"],
-            'resolved_by' => ['required', 'string'],
+            'resolved_by' => ['nullable', 'string'],
         ]);
 
         if($request->customer_name !== $complain->customer->name ||

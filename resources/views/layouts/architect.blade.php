@@ -52,33 +52,55 @@
                     </div>
                 </div>
 
-                @if(session('status'))
-                    <div class="alert alert-success alert-dismissible fade show" role="alert">
-                        <h5 class="alert-heading">Success!</h5>
-                        <hr>
-                        <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        {{ session('status') }}
+                <div class="row">
+                    <div class="col-sm-12">
+                        @if ($errors->any())
+                            <div class="alert alert-danger">
+                                <ul>
+                                    @foreach ($errors->all() as $error)
+                                        <li>{{ $error }}</li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
                     </div>
-                @endif
+                    <div class="col-sm-12">
+                        @if(session('failure'))
+                            <div class="alert alert-danger alert-dismissible fade show" role="alert">
+                                <h5 class="alert-heading">Request Failed!</h5>
+                                <hr>
+                                <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                {{ session('failure') }}
+                                @if(session('links'))
+                                    <hr>
+                                    <ul>
+                                        @foreach(session('links') as $link)
+                                            <li>
+                                                <a class="alert-link" href="{{ route('complain.show', ltrim($link, "0")) }}">{{ $link }}</a>
+                                            </li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    <div class="col-sm-12">
+                        @if(session('status'))
+                            <div class="alert alert-success alert-dismissible fade show" role="alert">
+                                <h5 class="alert-heading">Success!</h5>
+                                <hr>
+                                <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
+                                {{ session('status') }}
+                            </div>
+                        @endif
+                    </div>
+                </div>
 
-                @if(session('failure'))
-                    <div class="alert alert-danger alert-dismissible fade show" role="alert">
-                        <h5 class="alert-heading">Request Failed!</h5>
-                        <hr>
-                        <button type="button" data-dismiss="alert" class="close" aria-label="Close"><span aria-hidden="true">×</span></button>
-                        {{ session('failure') }}
-                    </div>
-                @endif
 
-                @if ($errors->any())
-                    <div class="alert alert-danger">
-                        <ul>
-                            @foreach ($errors->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+
+
+
+
 
                 @yield('content')
             </div>
