@@ -43,7 +43,7 @@
                 <div class="form-group row">
                     <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>
                     <div class="col-sm-10">
-                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') }}" class="form-control @error('resolved_by') is-invalid @enderror">
+                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') ?? $complain->resolved_by }}" class="form-control @error('resolved_by') is-invalid @enderror">
                         @error('resolved_by')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>

@@ -139,7 +139,7 @@ class MaintenanceUserController extends Controller
             $complains = $maintenanceUser->complains->map(function (Complain $complain) {
                 return $complain->getComplainNumber();
             });
-            return redirect()->route('maintenanceUsers.index')->with('failure', "This user has following complains associated with them. Please disassociate them before deleting. $complains")->with('links', $complains);
+            return redirect()->route('maintenanceUsers.index')->with('failure', "This user has following complains associated with them. Please disassociate them before deleting.")->with('links', $complains);
         }
 
         try {
