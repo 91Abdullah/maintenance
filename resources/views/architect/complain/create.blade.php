@@ -59,18 +59,6 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="informed_by" class="col-form-label col-sm-2">Informed By <sup style="color:red;">*</sup></label>
-                    <div class="col-sm-10">
-                        <input name="informed_by" type="text" id="informed_by" placeholder="Informed By" value="{{ old('informed_by') }}" class="form-control @error('informed_by') is-invalid @enderror" required>
-                        @error('informed_by')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
                     <label for="title" class="col-form-label col-sm-2">Complain Title</label>
                     <div class="col-sm-10">
                         <input name="title" type="text" id="title" placeholder="Title" value="{{ old('title') }}" class="form-control @error('title') is-invalid @enderror">
@@ -81,23 +69,6 @@
                         @enderror
                     </div>
 
-                </div>
-
-                <div class="form-group row">
-                    <label for="maintenance_user_id" class="col-form-label col-sm-2">Maintenance User <sup style="color:red;">*</sup></label>
-                    <div class="col-sm-10">
-                        <select class="form-control singleselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id" id="maintenance_user_id" required>
-                            <option></option>
-                            @foreach(\App\MaintenanceUser::pluck('name', 'id') as $index => $maintenanceUser)
-                                <option {{ old('maintenance_user_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $maintenanceUser }}</option>
-                            @endforeach
-                        </select>
-                        @error('maintenance_user_id')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
-                    </div>
                 </div>
 
                 <div class="form-group row">
@@ -123,7 +94,7 @@
                         <select class="form-control multiselect-dropdown @error('issue_id') is-invalid @enderror" style="width: 100%;" name="issue_id[]" multiple id="issue_id" required>
                             <option></option>
                             @foreach(\App\Issue::pluck('name', 'id') as $index => $issue)
-                                <option {{ old('issue_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $issue }}</option>
+                                <option {{ collect(old('issue_id'))->contains($index) ? 'selected' : ''  }} value="{{ $index }}">{{ $issue }}</option>
                             @endforeach
                         </select>
                         @error('issue_id')
@@ -152,6 +123,35 @@
                 </div>
 
                 <div class="form-group row">
+                    <label for="informed_by" class="col-form-label col-sm-2">Informed By <sup style="color:red;">*</sup></label>
+                    <div class="col-sm-10">
+                        <input name="informed_by" type="text" id="informed_by" placeholder="Informed By" value="{{ old('informed_by') }}" class="form-control @error('informed_by') is-invalid @enderror" required>
+                        @error('informed_by')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="maintenance_user_id" class="col-form-label col-sm-2">Maintenance User <sup style="color:red;">*</sup></label>
+                    <div class="col-sm-10">
+                        <select class="form-control singleselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id" id="maintenance_user_id" required>
+                            <option></option>
+                            @foreach(\App\MaintenanceUser::pluck('name', 'id') as $index => $maintenanceUser)
+                                <option {{ old('maintenance_user_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $maintenanceUser }}</option>
+                            @endforeach
+                        </select>
+                        @error('maintenance_user_id')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label for="remarks" class="col-form-label col-sm-2">Remarks / Feedback</label>
                     <div class="col-sm-10">
                         <textarea rows="3" name="remarks" id="remarks" placeholder="Remarks / Feedback" class="form-control @error('desc') is-invalid @enderror">{{ old('remarks') }}</textarea>
@@ -166,7 +166,7 @@
                 <div class="form-group row">
                     <label for="desc" class="col-form-label col-sm-2">Description</label>
                     <div class="col-sm-10">
-                        <textarea rows="3" name="desc" id="name" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') }}</textarea>
+                        <textarea id="desc" rows="3" name="desc" id="name" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') }}</textarea>
                         @error('desc')
                         <div class="invalid-feedback">
                             <strong>{{ $message }}</strong>
@@ -217,7 +217,7 @@
         });
 
         $("#search_customer").on("select2:select", (e) => {
-            let elem = $("option:selected");
+            let elem = $("#search_customer option:selected");
             let name = elem.text();
             let number = elem.data("number");
             let id = elem.val();

@@ -110,7 +110,7 @@ class ComplainController extends Controller
     {
         $request->validate([
             'customer_name' => ['required', 'string'],
-            'customer_number' => ['required', 'numeric'],
+            'customer_number' => ['required'],
             'customer_id' => ['nullable', 'exists:customers,id'],
             'title' => ['nullable', 'string'],
             'order_id' => ['nullable'],
@@ -130,22 +130,27 @@ class ComplainController extends Controller
             ]);
         }
 
-        $complain = new Complain();
-        $complain->title = $request->title;
-        $complain->order_id = $request->order_id;
-        $complain->outlet_id = $request->outlet_id;
-        $complain->ticket_status_id = $request->ticket_status_id;
-        $complain->user_id = Auth::user()->id;
-        $complain->customer_id = $customer->id;
-        $complain->desc = $request->desc;
-        $complain->remarks = $request->remarks;
-        $complain->informed_by = $request->informed_by;
-        $complain->maintenance_user_id = $request->maintenance_user_id;
-        $complain->save();
+        $newComplains = [];
 
-        $complain->issues()->sync($request->issue_id);
+        foreach ($request->issue_id as $key => $value) {
+            $complain = new Complain();
+            $complain->title = $request->title;
+            $complain->order_id = $request->order_id;
+            $complain->outlet_id = $request->outlet_id;
+            $complain->ticket_status_id = $request->ticket_status_id;
+            $complain->user_id = Auth::user()->id;
+            $complain->customer_id = $customer->id;
+            $complain->desc = $request->desc;
+            $complain->remarks = $request->remarks;
+            $complain->informed_by = $request->informed_by;
+            $complain->maintenance_user_id = $request->maintenance_user_id;
+            $complain->save();
 
-        return redirect()->route('complain.index')->with('status', "Complain has been created with number: " . $complain->getComplainNumber());
+            $complain->issues()->sync([$value]);
+            $newComplains[$key] = $complain->getComplainNumber();
+        }
+
+        return redirect()->route('complain.index')->with('status', "Complain(s) have been created with number(s): " . collect($newComplains)->implode(", "));
 
     }
 
