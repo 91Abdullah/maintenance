@@ -63,6 +63,54 @@
                     <span>Resolved By </span>
                     <span class="font-weight-bold {{ $complain->resolved_by == null ? "text-danger" : "text-primary" }}">{{ $complain->resolved_by ?? "Unresolved" }}</span>
                 </li>
+                <li class="list-group-item">
+                    <span>SMS Recipient(s) </span><br/>
+                    @foreach($complain->message_recipients as $messageRecipient)
+                        <span>{{ $messageRecipient->name }}: </span><span class="font-weight-bold">{{ $messageRecipient->numbers }}</span>
+                        <br/>
+                    @endforeach
+                </li>
+                <li class="list-group-item">
+                    <div class="table-responsive">
+                        <table class="table table-sm table-bordered">
+                            <thead>
+                            <tr>
+                                <th class="text-center" colspan="9">
+                                    Sent Messages
+                                </th>
+                            </tr>
+                            <tr>
+                                <th>Response</th>
+                                <th>Code</th>
+                                <th>Status</th>
+                                <th>Errorno</th>
+                                <th>MsgStatus</th>
+                                <th>MsgData</th>
+                                <th>Sender</th>
+                                <th>Receiver(s)</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            @foreach($complain->message_responses as $message)
+                                <tr>
+                                    <td>{{ $message->response }}</td>
+                                    <td>{{ $message->code }}</td>
+                                    <td>{{ $message->status }}</td>
+                                    <td>{{ simplexml_load_string($message->message)->errorno }}</td>
+                                    <td>{{ simplexml_load_string($message->message)->status }}</td>
+                                    <td>{{ simplexml_load_string($message->message)->msgdata }}</td>
+                                    <td>{{ simplexml_load_string($message->message)->sender }}</td>
+                                    <td>
+                                        @foreach(simplexml_load_string($message->message)->receivers->receiver as $receiver)
+                                            {{ $receiver }}
+                                        @endforeach
+                                    </td>
+                                </tr>
+                            @endforeach
+                            </tbody>
+                        </table>
+                    </div>
+                </li>
             </ul>
 
         </div>

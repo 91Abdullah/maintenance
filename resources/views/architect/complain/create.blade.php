@@ -152,6 +152,23 @@
                 </div>
 
                 <div class="form-group row">
+                    <label for="message_recipient_id" class="col-form-label col-sm-2">SMS Recipients</label>
+                    <div class="col-sm-10">
+                        <select class="form-control multiselect-dropdown @error('message_recipient_id') is-invalid @enderror" style="width: 100%; height: 100%" name="message_recipient_id[]" id="message_recipient_id" multiple>
+                            <option></option>
+                            @foreach(\App\MessageRecipient::pluck('name', 'id') as $index => $messageRecipient)
+                                <option {{ old('message_recipient_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $messageRecipient }}</option>
+                            @endforeach
+                        </select>
+                        @error('message_recipient_id')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label for="remarks" class="col-form-label col-sm-2">Remarks / Feedback</label>
                     <div class="col-sm-10">
                         <textarea rows="3" name="remarks" id="remarks" placeholder="Remarks / Feedback" class="form-control @error('desc') is-invalid @enderror">{{ old('remarks') }}</textarea>

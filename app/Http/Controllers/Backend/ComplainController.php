@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Backend;
 use App\Complain;
 use App\Customer;
 use App\Department;
+use App\Events\SendSMSEvent;
 use App\Exports\ComplainExport;
 use App\Outlet;
 use Carbon\Carbon;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Maatwebsite\Excel\Facades\Excel;
+use SimpleXMLElement;
 use Yajra\DataTables\Facades\DataTables;
 use Yajra\DataTables\Html\Builder;
 
@@ -116,6 +118,7 @@ class ComplainController extends Controller
             'order_id' => ['nullable'],
             'outlet_id' => ['required', 'exists:outlets,id'],
             'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
+            'message_recipient_id' => ['nullable', 'exists:message_recipients,id'],
             'issue_id' => ['array', 'required', 'exists:issues,id'],
             'ticket_status_id' => ['required', 'exists:ticket_statuses,id'],
             'informed_by' => ['required', 'string']
@@ -147,7 +150,11 @@ class ComplainController extends Controller
             $complain->save();
 
             $complain->issues()->sync([$value]);
+            $complain->message_recipients()->sync($request->message_recipient_id);
+
             $newComplains[$key] = $complain->getComplainNumber();
+
+            event(new SendSMSEvent($complain));
         }
 
         return redirect()->route('complain.index')->with('status', "Complain(s) have been created with number(s): " . collect($newComplains)->implode(", "));
@@ -162,6 +169,7 @@ class ComplainController extends Controller
      */
     public function show(Complain $complain)
     {
+        /*return dd((simplexml_load_string($complain->message_responses->first()->message))->receivers->receiver->__toString());*/
         return view('architect.complain.show', compact('complain'));
     }
 
@@ -193,7 +201,8 @@ class ComplainController extends Controller
             "order_id" => ["nullable"],
             "outlet_id" => ["required", "exists:outlets,id"],
             'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
-            "issue_id" => ["array", "required", "exists:issues,id"],
+            'message_recipient_id' => ['array', 'nullable', 'exists:message_recipients,id'],
+            "issue_id" => ["required", "exists:issues,id"],
             "ticket_status_id" => ["required", "exists:ticket_statuses,id"],
             'resolved_by' => ['nullable', 'string'],
         ]);
@@ -219,7 +228,10 @@ class ComplainController extends Controller
         $complain->maintenance_user_id = $request->maintenance_user_id;
         $complain->update();
 
-        $complain->issues()->sync($request->issue_id);
+        $complain->issues()->sync([$request->issue_id]);
+        $complain->message_recipients()->sync($request->message_recipient_id);
+
+        event(new SendSMSEvent($complain));
 
         return redirect()->route('complain.index')->with('status', "Complain #" . $complain->getComplainNumber() . " has been updated");
     }

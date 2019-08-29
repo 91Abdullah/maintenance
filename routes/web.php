@@ -35,6 +35,10 @@ Route::prefix('backend')->middleware(['auth'])->group(function () {
             Route::resource('department', 'DepartmentController');
             Route::resource('issue', 'IssueController');
             Route::resource('ticketStatus', 'TicketStatusController');
+            Route::resource('messageRecipient', 'MessageRecipientController');
+
+            Route::get('settings', 'SettingController@index')->name('settings.index');
+            Route::patch('settings', 'SettingController@update')->name('settings.update');
             //Route::resource('smsRecipient', 'SmsRecipientController');
             //Route::resource('rating', 'RatingController');
 

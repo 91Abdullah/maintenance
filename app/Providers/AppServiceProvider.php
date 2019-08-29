@@ -2,6 +2,8 @@
 
 namespace App\Providers;
 
+use App\Complain;
+use App\Observers\ComplainObserver;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Schema;
 
@@ -24,6 +26,6 @@ class AppServiceProvider extends ServiceProvider
      */
     public function boot()
     {
-        //
+        //Complain::observe(ComplainObserver::class);
     }
 }
