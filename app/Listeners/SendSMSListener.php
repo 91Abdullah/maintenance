@@ -41,21 +41,6 @@ class SendSMSListener
         $password = Setting::where("key", "=", "password")->first()->value;
         if(in_array($complain->ticket_status->name, $this->statuses))
         {
-            $client = new Client();
-            $response = $client->get($url, ['query' => [
-                'username' => $username,
-                'password' => $password,
-                'receiver' => $complain->customer->number,
-                'msgdata' => $template
-            ]]);
-            $complain->message_responses()->create([
-                'receiver' => $complain->customer->number,
-                'response' => $response->getReasonPhrase(),
-                'code' => $response->getStatusCode(),
-                'status' => $complain->ticket_status->name,
-                'message' => $response->getBody()
-            ]);
-
             if($complain->message_recipients()->exists()) {
                 foreach ($complain->message_recipients as $message_recipient) {
                     $client = new Client();

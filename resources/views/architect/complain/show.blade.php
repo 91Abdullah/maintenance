@@ -22,14 +22,6 @@
                     <span class="font-weight-bold">{{ $complain->getComplainNumber() }}</span>
                 </li>
                 <li class="list-group-item">
-                    <span>Customer Name </span>
-                    <span class="font-weight-bold">{{ $complain->customer->name ?? "DELETED" }}</span>
-                </li>
-                <li class="list-group-item">
-                    <span>Customer Number </span>
-                    <span class="font-weight-bold">{{ $complain->customer->number ?? "DELETED" }}</span>
-                </li>
-                <li class="list-group-item">
                     <span>Outlet </span>
                     <span class="font-weight-bold">{{ $complain->outlet->name }}</span>
                 </li>

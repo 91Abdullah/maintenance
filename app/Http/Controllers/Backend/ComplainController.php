@@ -63,12 +63,6 @@ class ComplainController extends Controller
             ->editColumn('maintenance_user_id', function (Complain $complain) {
                 return $complain->maintenance_user->name;
             })
-            ->editColumn('customer_name', function (Complain $complain) {
-                return $complain->customer->name ?? "DELETED";
-            })
-            ->editColumn('customer_number', function (Complain $complain) {
-                return $complain->customer->number ?? "DELETED";
-            })
             ->editColumn('ticket_status_id', function (Complain $complain) {
                 return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
             })
@@ -111,8 +105,8 @@ class ComplainController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'customer_name' => ['required', 'string'],
-            'customer_number' => ['required'],
+            /*'customer_name' => ['required', 'string'],
+            'customer_number' => ['required'],*/
             'customer_id' => ['nullable', 'exists:customers,id'],
             'title' => ['nullable', 'string'],
             'order_id' => ['nullable'],
@@ -124,25 +118,26 @@ class ComplainController extends Controller
             'informed_by' => ['required', 'string']
         ]);
 
-        if($request->customer_id !== null) {
+        /*if($request->customer_id !== null) {
             $customer = Customer::findOrFail($request->customer_id);
         } else {
             $customer = Customer::create([
                 'name' => $request->customer_name,
                 'number' => $request->customer_number
             ]);
-        }
+        }*/
 
         $newComplains = [];
 
         foreach ($request->issue_id as $key => $value) {
             $complain = new Complain();
+
             $complain->title = $request->title;
             $complain->order_id = $request->order_id;
             $complain->outlet_id = $request->outlet_id;
             $complain->ticket_status_id = $request->ticket_status_id;
             $complain->user_id = Auth::user()->id;
-            $complain->customer_id = $customer->id;
+            $complain->customer_id = 0;
             $complain->desc = $request->desc;
             $complain->remarks = $request->remarks;
             $complain->informed_by = $request->informed_by;
@@ -194,8 +189,8 @@ class ComplainController extends Controller
     public function update(Request $request, Complain $complain)
     {
         $request->validate([
-            "customer_name" => ["required", "string"],
-            "customer_number" => ["required", "numeric"],
+            /*"customer_name" => ["required", "string"],
+            "customer_number" => ["required", "numeric"],*/
             "customer_id" => ["required", "exists:customers,id"],
             "title" => ["string"],
             "order_id" => ["nullable"],
@@ -207,7 +202,7 @@ class ComplainController extends Controller
             'resolved_by' => ['nullable', 'string'],
         ]);
 
-        if($request->customer_name !== $complain->customer->name ||
+        /*if($request->customer_name !== $complain->customer->name ||
             $request->customer_number !== $complain->customer->number) {
             // Update Customer
 
@@ -215,13 +210,12 @@ class ComplainController extends Controller
             $customer->name = $request->customer_name;
             $customer->number = $request->customer_number;
             $customer->save();
-        }
+        }*/
 
         $complain->title = $request->title;
         $complain->order_id = $request->order_id;
         $complain->outlet_id = $request->outlet_id;
         $complain->ticket_status_id = $request->ticket_status_id;
-        $complain->customer_id = $request->customer_id;
         $complain->desc = $request->desc;
         $complain->remarks = $request->remarks;
         $complain->resolved_by = $request->resolved_by;

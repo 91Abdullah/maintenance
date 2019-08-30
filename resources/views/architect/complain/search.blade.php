@@ -35,8 +35,6 @@
                 <tr>
                     <th>#</th>
                     <th>Order#</th>
-                    <th>Customer</th>
-                    <th>Customer#</th>
                     <th>Maintenance</th>
                     <th>Outlet</th>
                     <th>Title</th>
@@ -88,8 +86,6 @@
                 columns: [
                     {'data' : 'id', 'title' : 'Complain #'},
                     {'data' : 'order_id', 'title' : 'Order #'},
-                    {'data' : 'customer_name', 'title' : 'Customer'},
-                    {'data' : 'customer_number', 'title' : 'Customer #'},
                     {'data' : 'outlet_id', 'title' : 'Outlet'},
                     {'data' : 'maintenance_user_id', 'title' : 'Maintenance'},
                     {'data' : 'title', 'title' : 'Title'},

@@ -26,8 +26,6 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Customer</th>
-                        <th>Customer#</th>
                         <th>Maint User</th>
                         <th>Outlet</th>
                         <th>Title</th>
@@ -42,6 +40,8 @@
         </div>
     </div>
 
+    <audio id="soundNotification" src="{{ asset('sounds/bells.mp3') }}"></audio>
+
 @endsection
 
 @push('scripts')
@@ -55,9 +55,10 @@
             createdRow: function( row, data, dataIndex ) {
                 // console.log(row, data["class"], dataIndex);
                 let __class = "table-danger";
+                let __notif = document.getElementById('soundNotification');
                 if (data["class"] === "1" || data[0] === 1) {
                     $(row).addClass(__class);
-
+                    __notif.play();
                 }
 
             },
@@ -77,8 +78,6 @@
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             columns: [
                 {'data' : 'id', 'title' : 'Complain #'},
-                {'data' : 'customer_name', 'title' : 'Customer'},
-                {'data' : 'customer_number', 'title' : 'Customer #'},
                 {'data' : 'outlet_id', 'title' : 'Outlet'},
                 {'data' : 'maintenance_user_id', 'title' : 'Maint User'},
                 {'data' : 'title', 'title' : 'Title'},

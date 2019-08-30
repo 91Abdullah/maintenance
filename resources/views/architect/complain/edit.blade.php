@@ -14,7 +14,7 @@
                 @method('patch')
                 @csrf
 
-                <input type="hidden" value="{{ $complain->customer->id ?? "" }}" name="customer_id">
+                {{--<input type="hidden" value="{{ $complain->customer->id ?? "" }}" name="customer_id">
 
                 <div class="form-group">
                     <div class="row">
@@ -38,7 +38,7 @@
                             @enderror
                         </div>
                     </div>
-                </div>
+                </div>--}}
 
                 <div class="form-group row">
                     <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>

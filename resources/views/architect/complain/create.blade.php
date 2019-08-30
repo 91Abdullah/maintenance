@@ -17,7 +17,7 @@
             <form method="post" action="{{ route('complain.store') }}">
                 @csrf
 
-                <div class="form-group row">
+                {{--<div class="form-group row">
                     <label for="search_customer" class="col-form-label col-sm-2">Search Customer</label>
                     <div class="col-sm-10">
                         <select name="search_customer" class="form-control" type="text" id="search_customer">
@@ -56,7 +56,7 @@
                             @enderror
                         </div>
                     </div>
-                </div>
+                </div>--}}
 
                 <div class="form-group row">
                     <label for="title" class="col-form-label col-sm-2">Complain Title</label>
@@ -194,7 +194,7 @@
 
                 <div class="form-group row">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-hover-shine btn-alternate"><i class="fas fa-cog"></i> SUBMIT</button>
                     </div>
                 </div>
 

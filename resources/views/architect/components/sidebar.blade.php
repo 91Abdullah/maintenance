@@ -82,7 +82,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="{{ request()->is('*customer*') ? 'mm-active' : '' }}">
+                    {{--<li class="{{ request()->is('*customer*') ? 'mm-active' : '' }}">
                         <a href="javascript:void(0);" class="{{ request()->is('*customer*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon fas fa-users"></i>
                             Customer
@@ -102,7 +102,7 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
+                    </li>--}}
                     {{--<li>
                         <a href="javascript:void(0);" class="{{ request()->is('*roles/*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon pe-7s-users"></i>
