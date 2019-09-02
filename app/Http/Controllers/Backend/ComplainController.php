@@ -190,8 +190,8 @@ class ComplainController extends Controller
     {
         $request->validate([
             /*"customer_name" => ["required", "string"],
-            "customer_number" => ["required", "numeric"],*/
-            "customer_id" => ["required", "exists:customers,id"],
+            "customer_number" => ["required", "numeric"],
+            "customer_id" => ["required", "exists:customers,id"],*/
             "title" => ["string"],
             "order_id" => ["nullable"],
             "outlet_id" => ["required", "exists:outlets,id"],
