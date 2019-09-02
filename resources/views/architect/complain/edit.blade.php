@@ -14,59 +14,8 @@
                 @method('patch')
                 @csrf
 
-                {{--<input type="hidden" value="{{ $complain->customer->id ?? "" }}" name="customer_id">
-
-                <div class="form-group">
-                    <div class="row">
-                        <label for="customer_name" class="col-form-label col-sm-2">Customer Name <sup style="color:red;">*</sup></label>
-                        <div class="col-sm-4">
-                            <input name="customer_name" type="text" id="customer_name" placeholder="Customer Name" value="{{ old('customer_name') ?: $complain->customer->name ?? "" }}" class="form-control @error('customer_name') is-invalid @enderror">
-                            @error('customer_name')
-                            <div class="invalid-feedback">
-                                <strong>{{ $message }}</strong>
-                            </div>
-                            @enderror
-                        </div>
-
-                        <label for="customer_number" class="col-form-label col-sm-2">Customer Number <sup style="color:red;">*</sup></label>
-                        <div class="col-sm-4">
-                            <input name="customer_number" type="text" id="customer_number" placeholder="Customer Number" value="{{ old('customer_number') ?: $complain->customer->number ?? "" }}" class="form-control @error('customer_number') is-invalid @enderror">
-                            @error('customer_number')
-                            <div class="invalid-feedback">
-                                <strong>{{ $message }}</strong>
-                            </div>
-                            @enderror
-                        </div>
-                    </div>
-                </div>--}}
-
                 <div class="form-group row">
-                    <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>
-                    <div class="col-sm-10">
-                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') ?? $complain->resolved_by }}" class="form-control @error('resolved_by') is-invalid @enderror">
-                        @error('resolved_by')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
-                    <label for="title" class="col-form-label col-sm-2">Complain Title</label>
-                    <div class="col-sm-10">
-                        <input name="title" type="text" id="title" placeholder="Title" value="{{ old('title') ?: $complain->title }}" class="form-control @error('title') is-invalid @enderror">
-                        @error('title')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
-                    </div>
-
-                </div>
-
-                <div class="form-group row">
-                    <label for="outlet_id" class="col-form-label col-sm-2">Outlet <sup style="color:red;">*</sup></label>
+                    <label for="outlet_id" class="col-form-label col-sm-2">Location <sup style="color:red;">*</sup></label>
                     <div class="col-sm-10">
                         <select class="form-control singleselect-dropdown @error('outlet_id') is-invalid @enderror" style="width: 100%; height: 100%" name="outlet_id" id="outlet_id" required>
                             <option></option>
@@ -116,7 +65,19 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="maintenance_user_id" class="col-form-label col-sm-2">Maintenance User <sup style="color:red;">*</sup></label>
+                    <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>
+                    <div class="col-sm-10">
+                        <input name="resolved_by" type="text" id="resolved_by" placeholder="Resolved By" value="{{ old('resolved_by') ?? $complain->resolved_by }}" class="form-control @error('resolved_by') is-invalid @enderror" disabled>
+                        @error('resolved_by')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
+                    <label for="maintenance_user_id" class="col-form-label col-sm-2">informed To <sup style="color:red;">*</sup></label>
                     <div class="col-sm-10">
                         <select class="form-control singleselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id" id="maintenance_user_id" required>
                             <option></option>
@@ -150,18 +111,6 @@
                 </div>
 
                 <div class="form-group row">
-                    <label for="remarks" class="col-form-label col-sm-2">Remarks / Feedback</label>
-                    <div class="col-sm-10">
-                        <textarea rows="3" name="remarks" id="remarks" placeholder="Remarks / Feedback" class="form-control @error('desc') is-invalid @enderror">{{ old('remarks') ?: $complain->remarks }}</textarea>
-                        @error('remarks')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
-                    </div>
-                </div>
-
-                <div class="form-group row">
                     <label for="desc" class="col-form-label col-sm-2">Description</label>
                     <div class="col-sm-10">
                         <textarea rows="3" name="desc" id="desc" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') ?: $complain->desc }}</textarea>
@@ -174,8 +123,20 @@
                 </div>
 
                 <div class="form-group row">
+                    <label for="remarks" class="col-form-label col-sm-2">Remarks / Feedback</label>
+                    <div class="col-sm-10">
+                        <textarea rows="3" name="remarks" id="remarks" placeholder="Remarks / Feedback" class="form-control @error('desc') is-invalid @enderror">{{ old('remarks') ?: $complain->remarks }}</textarea>
+                        @error('remarks')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <div class="col-sm-10 offset-sm-2">
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary"><i class="fas fa-cogs"></i> UPDATE</button>
                     </div>
                 </div>
 
@@ -188,7 +149,7 @@
 
 @push('scripts')
     <script>
-        let url = "{{ route('search.customer') }}";
+        /*let url = "{{ route('search.customer') }}";
         $("#search_customer").select2({
             ajax: {
                 url: url,
@@ -223,6 +184,18 @@
             $("#customer_name").val(name);
             $("#customer_number").val(number);
             $("#customer_id").val(id);
+        });*/
+
+        $("#ticket_status_id").on("select2:select", (e) => {
+            let elem = $("#ticket_status_id option:selected");
+            if(elem.text() === "Closed")
+            {
+                $("#resolved_by").attr("disabled", false);
+                $("#resolved_by").attr("required", true);
+            } else {
+                $("#resolved_by").attr("disabled", true);
+                $("#resolved_by").attr("required", false);
+            }
         });
     </script>
 @endpush

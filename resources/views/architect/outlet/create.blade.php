@@ -2,9 +2,9 @@
 
 @extends('layouts.architect')
 
-@section('title', 'Outlets')
-@section('desc', 'Create a new outlet model.')
-@section('icon', 'fas fa-university')
+@section('title', 'Location')
+@section('desc', 'Create a new location model.')
+@section('icon', 'fas fa-search-location')
 
 
 

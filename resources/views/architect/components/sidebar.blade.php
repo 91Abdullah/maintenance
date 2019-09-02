@@ -61,58 +61,10 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="{{ request()->is('*maintenanceUsers*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*maintenanceUsers/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-users-cog"></i>
-                            Maintenance Users
-                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('maintenanceUsers.create') }}" class="{{ request()->is('*maintenanceUsers/create') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon"></i>
-                                    Add
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('maintenanceUsers.index') }}" class="{{ request()->is('*maintenanceUsers') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>List
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    {{--<li class="{{ request()->is('*customer*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*customer*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-users"></i>
-                            Customer
-                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('customer.create') }}" class="{{ request()->is('*customer/create') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon"></i>
-                                    Add
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('customer.index') }}" class="{{ request()->is('*customer') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>List
-                                </a>
-                            </li>
-                        </ul>
-                    </li>--}}
-                    {{--<li>
-                        <a href="javascript:void(0);" class="{{ request()->is('*roles/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon pe-7s-users"></i>
-                            Roles
-                        </a>
-                    </li>--}}
                     <li class="{{ request()->is('*outlet*') ? 'mm-active' : '' }}">
                         <a href="javascript:void(0);" class="{{ request()->is('*outlet*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-university"></i>
-                            Outlets
+                            <i class="metismenu-icon fas fa-search-location"></i>
+                            Locations
                             <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                         </a>
                         <ul>
@@ -243,7 +195,7 @@
                     </li>--}}
                 @endcan
                 @if(Auth::user()->can('admin-access') || Auth::user()->can('agent-access'))
-                    <li class="app-sidebar__heading">CRM</li>
+                    <li class="app-sidebar__heading">Maintenance Complaints</li>
                     <li class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
                         <a href="javascript:void(0);" class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon fas fa-comment"></i>

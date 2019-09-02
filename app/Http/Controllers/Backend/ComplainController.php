@@ -105,11 +105,6 @@ class ComplainController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            /*'customer_name' => ['required', 'string'],
-            'customer_number' => ['required'],*/
-            'customer_id' => ['nullable', 'exists:customers,id'],
-            'title' => ['nullable', 'string'],
-            'order_id' => ['nullable'],
             'outlet_id' => ['required', 'exists:outlets,id'],
             'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
             'message_recipient_id' => ['nullable', 'exists:message_recipients,id'],
@@ -132,12 +127,11 @@ class ComplainController extends Controller
         foreach ($request->issue_id as $key => $value) {
             $complain = new Complain();
 
-            $complain->title = $request->title;
-            $complain->order_id = $request->order_id;
+            $complain->customer_id = 0; //TODO: Remove relationship as per customer
+
             $complain->outlet_id = $request->outlet_id;
             $complain->ticket_status_id = $request->ticket_status_id;
             $complain->user_id = Auth::user()->id;
-            $complain->customer_id = 0;
             $complain->desc = $request->desc;
             $complain->remarks = $request->remarks;
             $complain->informed_by = $request->informed_by;
@@ -164,7 +158,6 @@ class ComplainController extends Controller
      */
     public function show(Complain $complain)
     {
-        /*return dd((simplexml_load_string($complain->message_responses->first()->message))->receivers->receiver->__toString());*/
         return view('architect.complain.show', compact('complain'));
     }
 
@@ -189,11 +182,6 @@ class ComplainController extends Controller
     public function update(Request $request, Complain $complain)
     {
         $request->validate([
-            /*"customer_name" => ["required", "string"],
-            "customer_number" => ["required", "numeric"],
-            "customer_id" => ["required", "exists:customers,id"],*/
-            "title" => ["string"],
-            "order_id" => ["nullable"],
             "outlet_id" => ["required", "exists:outlets,id"],
             'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
             'message_recipient_id' => ['array', 'nullable', 'exists:message_recipients,id'],

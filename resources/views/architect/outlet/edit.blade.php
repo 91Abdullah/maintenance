@@ -2,9 +2,9 @@
 
 @extends('layouts.architect')
 
-@section('title', 'Outlets')
-@section('desc', 'Edit Outlet: ' . $outlet->name)
-@section('icon', 'fas fa-university')
+@section('title', 'Locations')
+@section('desc', 'Edit Location: ' . $outlet->name)
+@section('icon', 'fas fa-search-location')
 
 @section('content')
 

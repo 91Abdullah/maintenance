@@ -26,9 +26,8 @@
                 <thead>
                     <tr>
                         <th>#</th>
-                        <th>Maint User</th>
-                        <th>Outlet</th>
-                        <th>Title</th>
+                        <th>Informed To</th>
+                        <th>Location</th>
                         <th>Status</th>
                         <th>Issue(s)</th>
                         <th>Created</th>
@@ -69,7 +68,7 @@
             },
             orderCellsTop: true,
             fixedHeader: false,
-            order: [[8, 'desc']],
+            order: [[7, 'desc']],
             dom: 'Bfrtip',
             buttons: [
                 'colvis', 'pageLength','copy', 'csv', 'excel', 'pdf', 'print',
@@ -78,9 +77,8 @@
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             columns: [
                 {'data' : 'id', 'title' : 'Complain #'},
-                {'data' : 'outlet_id', 'title' : 'Outlet'},
-                {'data' : 'maintenance_user_id', 'title' : 'Maint User'},
-                {'data' : 'title', 'title' : 'Title'},
+                {'data' : 'outlet_id', 'title' : 'Location'},
+                {'data' : 'maintenance_user_id', 'title' : 'Informed To'},
                 {'data' : 'ticket_status_id', 'title' : 'Status'},
                 {'data' : 'issue_id', 'title' : 'Issue(s)'},
                 {'data' : 'created_at', 'title' : 'Created'},

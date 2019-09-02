@@ -11,7 +11,7 @@ use Illuminate\Contracts\Queue\ShouldQueue;
 
 class SendSMSListener
 {
-    private $statuses = ['Open', 'Closed'];
+    private $statuses = ['Open', 'Closed', 'Pending'];
     /**
      * Create the event listener.
      *

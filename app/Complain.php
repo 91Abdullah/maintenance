@@ -32,11 +32,6 @@ class Complain extends Model
         return $this->belongsToMany('App\Issue', 'complain_issue');
     }
 
-    public function customer()
-    {
-        return $this->belongsTo('App\Customer', 'customer_id', 'id');
-    }
-
     public function department()
     {
         return $this->belongsTo('App\Department', 'department_id', 'id');
