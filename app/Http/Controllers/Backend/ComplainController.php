@@ -8,6 +8,7 @@ use App\Department;
 use App\Events\SendSMSEvent;
 use App\Exports\ComplainExport;
 use App\Outlet;
+use App\TicketStatus;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
@@ -56,6 +57,9 @@ class ComplainController extends Controller
             })
             ->editColumn('id', function (Complain $complain) {
                 return "<a href='" . route('complain.show', $complain->id) . "' class='btn-link'>" . $complain->getComplainNumber() . "</a>";
+            })
+            ->addColumn('duration', function (Complain $complain) {
+                return $complain->closure_time ? Carbon::parse($complain->closure_time)->diff($complain->created_at)->format("%H:%I") : "";
             })
             ->editColumn('outlet_id', function (Complain $complain) {
                 return $complain->outlet->name;
@@ -126,8 +130,6 @@ class ComplainController extends Controller
 
         foreach ($request->issue_id as $key => $value) {
             $complain = new Complain();
-
-            $complain->customer_id = 0; //TODO: Remove relationship as per customer
 
             $complain->outlet_id = $request->outlet_id;
             $complain->ticket_status_id = $request->ticket_status_id;
@@ -200,8 +202,10 @@ class ComplainController extends Controller
             $customer->save();
         }*/
 
-        $complain->title = $request->title;
-        $complain->order_id = $request->order_id;
+        if($request->ticket_status_id == TicketStatus::where('name', 'Closed')->first()->id) {
+            $complain->closure_time = Carbon::now();
+        }
+
         $complain->outlet_id = $request->outlet_id;
         $complain->ticket_status_id = $request->ticket_status_id;
         $complain->desc = $request->desc;

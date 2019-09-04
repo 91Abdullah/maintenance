@@ -29,22 +29,28 @@ class ComplainReportController extends Controller
             if($request->id !== null) {
                 $query->where("id", ltrim($request->id, "0"));
             }
-            if($request->order_id !== null) {
-                $query->where("order_id", $request->order_id);
-            }
-            if($request->customer_name !== null) {
+            /*if($request->customer_name !== null) {
                 $query->with(["customers" => function(Builder $builder) use ($request) {
                     $builder->where("name", "like", "%$request->customer_name%");
                 }]);
-            }
+            }*/
             if($request->outlet_id !== null) {
                 $query->whereIn("outlet_id", $request->outlet_id);
             }
             if($request->user_id !== null) {
                 $query->whereIn("user_id", $request->user_id);
             }
-            if($request->title !== null) {
-                $query->where("title", $request->title);
+            if($request->maintenance_user_id !== null) {
+                $query->whereIn('maintenance_user_id', $request->maintenance_user_id);
+            }
+            if($request->informed_by !== null) {
+                $query->where('informed_by', 'like', "%$request->informed_by%");
+            }
+            if($request->resolved_by !== null) {
+                $query->where('resolved_by', 'like', "%$request->resolved_by%");
+            }
+            if($request->ticket_status_id !== null) {
+                $query->whereIn('ticket_status_id', $request->ticket_status_id);
             }
 
             return DataTables::of($query->get())
@@ -54,20 +60,26 @@ class ComplainReportController extends Controller
                 ->editColumn('outlet_id', function (Complain $complain) {
                     return $complain->outlet->name;
                 })
-                ->editColumn('customer_name', function (Complain $complain) {
-                    return $complain->customer->name;
+                ->editColumn('informed_by', function (Complain $complain) {
+                    return $complain->informed_by;
                 })
-                ->editColumn('customer_number', function (Complain $complain) {
-                    return $complain->customer->number;
-                })
-                ->editColumn('ticket_status_id', function (Complain $complain) {
-                    return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
+                ->editColumn('resolved_by', function (Complain $complain) {
+                    return $complain->resolved_by;
                 })
                 ->editColumn('user_id', function (Complain $complain) {
                     return $complain->created_by->name;
                 })
+                ->editColumn('maintenance_user_id', function (Complain $complain) {
+                    return $complain->maintenance_user->name;
+                })
+                ->editColumn('ticket_status_id', function (Complain $complain) {
+                    return view('architect.datatables.status', ['status' => $complain->ticket_status->name]);
+                })
                 ->editColumn('issue_id', function (Complain $complain) {
                     return view('architect.datatables.issues', ['issues' => $complain->issues]);
+                })
+                ->addColumn('time_taken', function (Complain $complain) {
+                    return $complain->closure_time !== null ? Carbon::parse($complain->closure_time)->diffInHours($complain->created_at) : "";
                 })
                 ->rawColumns(['edit', 'ticket_status_id', 'issue_id', 'id'])
                 ->toJson();

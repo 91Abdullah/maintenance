@@ -30,8 +30,10 @@
                         <th>Location</th>
                         <th>Status</th>
                         <th>Issue(s)</th>
-                        <th>Created</th>
                         <th>Created By</th>
+                        <th>Created</th>
+                        <th>Closed At</th>
+                        <th>Duration</th>
                         <th class="ignore"></th>
                     </tr>
                 </thead>
@@ -68,7 +70,7 @@
             },
             orderCellsTop: true,
             fixedHeader: false,
-            order: [[7, 'desc']],
+            order: [[9, 'desc']],
             dom: 'Bfrtip',
             buttons: [
                 'colvis', 'pageLength','copy', 'csv', 'excel', 'pdf', 'print',
@@ -76,13 +78,15 @@
             stateSave: true,
             lengthMenu: [[10, 25, 50, -1], [10, 25, 50, "All"]],
             columns: [
-                {'data' : 'id', 'title' : 'Complain #'},
+                {'data' : 'id', 'title' : '#'},
                 {'data' : 'outlet_id', 'title' : 'Location'},
                 {'data' : 'maintenance_user_id', 'title' : 'Informed To'},
                 {'data' : 'ticket_status_id', 'title' : 'Status'},
-                {'data' : 'issue_id', 'title' : 'Issue(s)'},
+                {'data' : 'issue_id', 'title' : 'Issue'},
                 {'data' : 'created_at', 'title' : 'Created'},
                 {'data' : 'user_id', 'title' : 'Created By'},
+                {'data' : 'closure_time', 'title' : 'Closed At'},
+                {'data' : 'duration', 'title' : 'Duration'},
                 {'data' : 'edit', 'title' : ''}
             ],
             responsive: true

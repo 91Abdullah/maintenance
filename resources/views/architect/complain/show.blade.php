@@ -56,6 +56,14 @@
                     <span class="font-weight-bold {{ $complain->resolved_by == null ? "text-danger" : "text-primary" }}">{{ $complain->resolved_by ?? "Unresolved" }}</span>
                 </li>
                 <li class="list-group-item">
+                    <span>Resolved At</span>
+                    <span class="font-weight-bold">{{ $complain->closure_time }}</span>
+                </li>
+                <li class="list-group-item">
+                    <span>Duration</span>
+                    <span class="font-weight-bold">{{ Carbon\Carbon::parse($complain->closure_time)->diff($complain->created_at)->format("%H:%I") }}</span>
+                </li>
+                <li class="list-group-item">
                     <span>SMS Recipient(s) </span><br/>
                     @foreach($complain->message_recipients as $messageRecipient)
                         <span>{{ $messageRecipient->name }}: </span><span class="font-weight-bold">{{ $messageRecipient->numbers }}</span>

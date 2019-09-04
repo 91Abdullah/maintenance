@@ -36,19 +36,7 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="order_id" class="col-form-label col-sm-2">Order ID</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="order_id" type="text" name="order_id" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="customer_name" class="col-form-label col-sm-2">Customer Name</label>
-                        <div class="col-sm-10">
-                            <input class="form-control" id="customer_name" type="text" name="customer_name" />
-                        </div>
-                    </div>
-                    <div class="form-group row">
-                        <label for="outlet_id" class="col-form-label col-sm-2">Outlet</label>
+                        <label for="outlet_id" class="col-form-label col-sm-2">Location</label>
                         <div class="col-sm-10">
                             <select class="multiselect-dropdown form-control" id="outlet_id" name="outlet_id[]" multiple>
                                 @foreach(\App\Outlet::pluck('name', 'id') as $index => $name)
@@ -68,9 +56,47 @@
                         </div>
                     </div>
                     <div class="form-group row">
-                        <label for="title" class="col-form-label col-sm-2">Complaint Title</label>
+                        <label for="ticket_status_id" class="col-form-label col-sm-2">Status</label>
                         <div class="col-sm-10">
-                            <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+                            <select class="form-control multiselect-dropdown @error('ticket_status_id') is-invalid @enderror" name="ticket_status_id[]" id="ticket_status_id" style="width: 100%;" multiple>
+                                <option></option>
+                                @foreach(\App\TicketStatus::pluck('name', 'id') as $index => $status)
+                                    <option {{ old('ticket_status_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $status }}</option>
+                                @endforeach
+                            </select>
+                            @error('ticket_status_id')
+                            <div class="invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="maintenance_user_id" class="col-form-label col-sm-2">Informed To</label>
+                        <div class="col-sm-10">
+                            <select class="form-control multiselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id[]" id="maintenance_user_id" multiple>
+                                <option></option>
+                                @foreach(\App\MaintenanceUser::pluck('name', 'id') as $index => $maintenanceUser)
+                                    <option {{ collect(old('maintenance_user_id'))->contains($index) ? 'selected' : ''  }} value="{{ $index }}">{{ $maintenanceUser }}</option>
+                                @endforeach
+                            </select>
+                            @error('maintenance_user_id')
+                            <div class="invalid-feedback">
+                                <strong>{{ $message }}</strong>
+                            </div>
+                            @enderror
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="informed_by" class="col-form-label col-sm-2">Informed By</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="informed_by" name="informed_by" value="{{ old('informed_by') }}">
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="resolved_by" class="col-form-label col-sm-2">Resolved By</label>
+                        <div class="col-sm-10">
+                            <input type="text" class="form-control" id="resolved_by" name="resolved_by" value="{{ old('resolved_by') }}">
                         </div>
                     </div>
                     <div class="form-group row">
@@ -100,15 +126,17 @@
             <table id="datatable" style="width: 100%;" class="table table-borderless table-striped">
                 <thead>
                 <tr>
-                    <th>Complain #</th>
-                    <th>Customer</th>
-                    <th>Customer #</th>
-                    <th>Outlet</th>
-                    <th>Title</th>
+                    <th>#</th>
+                    <th>Location</th>
+                    <th>Informed By</th>
+                    <th>Resolved By</th>
+                    <th>Informed To</th>
                     <th>Status</th>
-                    <th>Issue(s)</th>
+                    <th>Issue</th>
                     <th>Created</th>
-                    <th>Created By</th>
+                    <th>By</th>
+                    <th>Closed</th>
+                    <th>Dur.</th>
                 </tr>
                 </thead>
                 {{--<tbody>
@@ -136,15 +164,17 @@
             let table = undefined;
             $.fn.dataTable.ext.errMode = 'none';
             let columns = [
-                {'data' : 'id', 'title' : 'Complain #'},
-                {'data' : 'customer_name', 'title' : 'Customer'},
-                {'data' : 'customer_number', 'title' : 'Customer #'},
-                {'data' : 'outlet_id', 'title' : 'Outlet'},
-                {'data' : 'title', 'title' : 'Title'},
+                {'data' : 'id', 'title' : '#'},
+                {'data' : 'outlet_id', 'title' : 'Location'},
+                {'data' : 'informed_by', 'title' : 'Informed By'},
+                {'data' : 'resolved_by', 'title' : 'Resolved By'},
+                {'data' : 'maintenance_user_id', 'title' : 'Informed To'},
                 {'data' : 'ticket_status_id', 'title' : 'Status'},
-                {'data' : 'issue_id', 'title' : 'Issue(s)'},
+                {'data' : 'issue_id', 'title' : 'Issue'},
                 {'data' : 'created_at', 'title' : 'Created'},
-                {'data' : 'user_id', 'title' : 'Created By'}
+                {'data' : 'user_id', 'title' : 'By'},
+                {'data' : 'closure_time', 'title' : 'Closed'},
+                {'data' : 'time_taken', 'title' : 'Dur.'}
             ];
 
             let start = moment().startOf('day');
@@ -183,11 +213,12 @@
                         data: {
                             datetimes: document.getElementById('datetimes').value,
                             id: document.getElementById("id").value,
-                            order_id: document.getElementById("order_id").value,
-                            customer_name: document.getElementById("customer_name").value,
                             outlet_id: $("#outlet_id").val(),
                             user_id: $("#user_id").val(),
-                            title: document.getElementById("title").value
+                            maintenance_user_id: $("#maintenance_user_id").val(),
+                            informed_by: $("#informed_by").val(),
+                            resolved_by: $("#resolved_by").val(),
+                            ticket_status_id: $("#ticket_status_id").val(),
                         }
                         /*success: (result, response, xhr) => {
                             console.log(result, response, xhr);

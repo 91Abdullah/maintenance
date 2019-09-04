@@ -30,12 +30,16 @@ class SendSMSListener
      */
     public function handle(SendSMSEvent $event)
     {
-        $this->sendMessage($event->complain);
+        try {
+            $this->sendMessage($event->complain);
+        } catch (\Exception $e) {
+
+        }
     }
 
     public function sendMessage(Complain $complain)
     {
-        $template = "Outlet: " . $complain->outlet->name . "\nIssue(s): " . implode(",", $complain->issues()->pluck('name')->toArray()) . "\nInformed to: " . $complain->maintenance_user->name . "\nInformed By: " . $complain->informed_by . "\nTicket#: " . $complain->getComplainNumber() . "\nStatus: " . $complain->ticket_status->name . "\nDetails: " . $complain->desc;
+        $template = "Outlet: " . $complain->outlet->name . "\nIssue(s): " . implode(",", $complain->issues()->pluck('name')->toArray()) . "\nInformed to: " . $complain->maintenance_user->name . "\nInformed By: " . $complain->informed_by . "\nTicket#: " . $complain->getComplainNumber() . "\nStatus: " . $complain->ticket_status->name . "\nDetails: " . $complain->desc . ($complain->remarks ? "\nRemarks: $complain->remarks" : "");
         $url = Setting::where("key", "=", "url")->first()->value;
         $username = Setting::where("key", "=", "username")->first()->value;
         $password = Setting::where("key", "=", "password")->first()->value;
