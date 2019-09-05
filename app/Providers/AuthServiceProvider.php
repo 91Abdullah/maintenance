@@ -34,6 +34,10 @@ class AuthServiceProvider extends ServiceProvider
             return $user->roles()->get()->contains('name', 'admin') || $user->roles()->get()->contains('name', 'superadmin');
         });
 
+        Gate::define('admin-supervisor', function (User $user) {
+            return $user->roles()->get()->contains('name', 'admin') || $user->roles()->get()->contains('name', 'supervisor');
+        });
+
         Gate::define('supervisor-access', function (User $user) {
             return $user->roles()->get()->contains('name', 'supervisor');
         });

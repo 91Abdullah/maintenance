@@ -32,12 +32,18 @@
     <div class="scrollbar-sidebar">
         <div class="app-sidebar__inner">
             <ul class="vertical-nav-menu">
+                <li class="app-sidebar__heading">Administration</li>
+                <li>
+                    <a href="{{ route('index') }}" class="{{ request()->is('backend') ? 'mm-active' : '' }}">
+                        <i class="metismenu-icon fas fa-rocket"></i>
+                        Dashboard
+                    </a>
+                </li>
                 @can('admin-access')
-                    <li class="app-sidebar__heading">Administration</li>
-                    <li>
-                        <a href="{{ route('index') }}" class="{{ request()->is('backend') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-rocket"></i>
-                            Dashboard
+                    <li class="{{ request()->is('*settings*') ? 'mm-active' : '' }}">
+                        <a href="{{ route('settings.update', App\Setting::first()->id) }}" class="{{ request()->is('*settings/*') ? 'mm-active' : '' }}">
+                            <i class="metismenu-icon fas fa-cogs"></i>
+                            Settings
                         </a>
                     </li>
                     <li class="{{ request()->is('*users*') ? 'mm-active' : '' }}">
@@ -103,27 +109,7 @@
                             </li>
                         </ul>
                     </li>
-                    <li class="{{ request()->is('*issue*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*issue/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-question-circle"></i>
-                            Complaint Type
-                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('issue.create') }}" class="{{ request()->is('*issue/create') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon"></i>
-                                    Add
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('issue.index') }}" class="{{ request()->is('*issue') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>List
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
+
                     <li class="{{ request()->is('*ticketStatus*') ? 'mm-active' : '' }}">
                         <a href="javascript:void(0);" class="{{ request()->is('*ticketStatus/*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon fas fa-tags"></i>
@@ -144,33 +130,6 @@
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="{{ request()->is('*messageRecipient*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*messageRecipient/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-sms"></i>
-                            SMS Recipients
-                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('messageRecipient.create') }}" class="{{ request()->is('*messageRecipient/create') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon"></i>
-                                    Add
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('messageRecipient.index') }}" class="{{ request()->is('*messageRecipient') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>List
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                    <li class="{{ request()->is('*settings*') ? 'mm-active' : '' }}">
-                        <a href="{{ route('settings.update', App\Setting::first()->id) }}" class="{{ request()->is('*settings/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-cogs"></i>
-                            Settings
-                        </a>
                     </li>
                     {{--<li class="{{ request()->is('*smsRecipient*') ? 'mm-active' : '' }}">
                         <a href="javascript:void(0);" class="{{ request()->is('*smsRecipient/*') ? 'mm-active' : '' }}">
@@ -194,36 +153,78 @@
                         </ul>
                     </li>--}}
                 @endcan
-                @if(Auth::user()->can('admin-access') || Auth::user()->can('agent-access'))
-                    <li class="app-sidebar__heading">Maintenance Complaints</li>
-                    <li class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon fas fa-comment"></i>
-                            Complaints
-                            <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
-                        </a>
-                        <ul>
-                            <li>
-                                <a href="{{ route('complain.create') }}" class="{{ request()->is('*complain/create') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon"></i>
-                                    Add
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('complain.index') }}" class="{{ request()->is('*complain') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>List
-                                </a>
-                            </li>
-                            <li>
-                                <a href="{{ route('complain.form') }}" class="{{ request()->is('*complain/search*') ? 'mm-active' : '' }}">
-                                    <i class="metismenu-icon">
-                                    </i>Search
-                                </a>
-                            </li>
-                        </ul>
-                    </li>
-                @endif
+                @can('admin-supervisor')
+                <li class="{{ request()->is('*issue*') ? 'mm-active' : '' }}">
+                    <a href="javascript:void(0);" class="{{ request()->is('*issue/*') ? 'mm-active' : '' }}">
+                        <i class="metismenu-icon fas fa-question-circle"></i>
+                        Complaint Type
+                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('issue.create') }}" class="{{ request()->is('*issue/create') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon"></i>
+                                Add
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('issue.index') }}" class="{{ request()->is('*issue') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon">
+                                </i>List
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                <li class="{{ request()->is('*messageRecipient*') ? 'mm-active' : '' }}">
+                    <a href="javascript:void(0);" class="{{ request()->is('*messageRecipient/*') ? 'mm-active' : '' }}">
+                        <i class="metismenu-icon fas fa-sms"></i>
+                        SMS Recipients
+                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('messageRecipient.create') }}" class="{{ request()->is('*messageRecipient/create') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon"></i>
+                                Add
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('messageRecipient.index') }}" class="{{ request()->is('*messageRecipient') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon">
+                                </i>List
+                            </a>
+                        </li>
+                    </ul>
+                </li>
+                @endcan
+                <li class="app-sidebar__heading">Maintenance Complaints</li>
+                <li class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
+                    <a href="javascript:void(0);" class="{{ request()->is('*complain*') && !request()->is('*reports*') ? 'mm-active' : '' }}">
+                        <i class="metismenu-icon fas fa-comment"></i>
+                        Complaints
+                        <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
+                    </a>
+                    <ul>
+                        <li>
+                            <a href="{{ route('complain.create') }}" class="{{ request()->is('*complain/create') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon"></i>
+                                Add
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('complain.index') }}" class="{{ request()->is('*complain') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon">
+                                </i>List
+                            </a>
+                        </li>
+                        <li>
+                            <a href="{{ route('complain.form') }}" class="{{ request()->is('*complain/search*') ? 'mm-active' : '' }}">
+                                <i class="metismenu-icon">
+                                </i>Search
+                            </a>
+                        </li>
+                    </ul>
+                </li>
                 {{--@if(Auth::user()->can('admin-access') || Auth::user()->can('rating-access'))
                     <li class="app-sidebar__heading">Rating SMS</li>
                     <li class="{{ request()->is('*rating*') && !request()->is('*reports*') ? 'mm-active' : '' }}">

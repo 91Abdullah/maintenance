@@ -33,9 +33,9 @@ Route::prefix('backend')->middleware(['auth'])->group(function () {
             Route::resource('maintenanceUsers', 'MaintenanceUserController');
             Route::resource('outlet', 'OutletController');
             Route::resource('department', 'DepartmentController');
-            Route::resource('issue', 'IssueController');
+
             Route::resource('ticketStatus', 'TicketStatusController');
-            Route::resource('messageRecipient', 'MessageRecipientController');
+
 
             Route::get('settings', 'SettingController@index')->name('settings.index');
             Route::patch('settings', 'SettingController@update')->name('settings.update');
@@ -44,6 +44,11 @@ Route::prefix('backend')->middleware(['auth'])->group(function () {
 
             // Export Routes
 
+        });
+
+        Route::middleware(['can:admin-supervisor'])->group(function () {
+            Route::resource('issue', 'IssueController');
+            Route::resource('messageRecipient', 'MessageRecipientController');
         });
 
         // Search Route
