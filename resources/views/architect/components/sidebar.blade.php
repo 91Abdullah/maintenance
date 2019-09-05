@@ -131,27 +131,27 @@
                             </li>
                         </ul>
                     </li>
-                    {{--<li class="{{ request()->is('*smsRecipient*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*smsRecipient/*') ? 'mm-active' : '' }}">
-                            <i class="metismenu-icon pe-7s-mail"></i>
+                    <li class="{{ request()->is('*maintenanceUsers*') ? 'mm-active' : '' }}">
+                        <a href="javascript:void(0);" class="{{ request()->is('*maintenanceUsers/*') ? 'mm-active' : '' }}">
+                            <i class="metismenu-icon fas fa-user-cog"></i>
                             SMS Recipients
                             <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                         </a>
                         <ul>
                             <li>
-                                <a href="{{ route('smsRecipient.create') }}" class="{{ request()->is('*smsRecipient/create') ? 'mm-active' : '' }}">
+                                <a href="{{ route('maintenanceUsers.create') }}" class="{{ request()->is('*maintenanceUsers/create') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon"></i>
                                     Add
                                 </a>
                             </li>
                             <li>
-                                <a href="{{ route('smsRecipient.index') }}" class="{{ request()->is('*smsRecipient') ? 'mm-active' : '' }}">
+                                <a href="{{ route('maintenanceUsers.index') }}" class="{{ request()->is('*maintenanceUsers') ? 'mm-active' : '' }}">
                                     <i class="metismenu-icon">
                                     </i>List
                                 </a>
                             </li>
                         </ul>
-                    </li>--}}
+                    </li>
                 @endcan
                 @can('admin-supervisor')
                 <li class="{{ request()->is('*issue*') ? 'mm-active' : '' }}">
