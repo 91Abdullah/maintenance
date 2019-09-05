@@ -111,7 +111,7 @@
                     </li>
 
                     <li class="{{ request()->is('*ticketStatus*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*ticketStatus/*') ? 'mm-active' : '' }}">
+                        <a href="javascript:void(0);" class="{{ request()->is('*ticketStatus*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon fas fa-tags"></i>
                             Status
                             <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -132,9 +132,9 @@
                         </ul>
                     </li>
                     <li class="{{ request()->is('*maintenanceUsers*') ? 'mm-active' : '' }}">
-                        <a href="javascript:void(0);" class="{{ request()->is('*maintenanceUsers/*') ? 'mm-active' : '' }}">
+                        <a href="javascript:void(0);" class="{{ request()->is('*maintenanceUsers*') ? 'mm-active' : '' }}">
                             <i class="metismenu-icon fas fa-user-cog"></i>
-                            SMS Recipients
+                            Maintenance Users
                             <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
                         </a>
                         <ul>
@@ -155,7 +155,7 @@
                 @endcan
                 @can('admin-supervisor')
                 <li class="{{ request()->is('*issue*') ? 'mm-active' : '' }}">
-                    <a href="javascript:void(0);" class="{{ request()->is('*issue/*') ? 'mm-active' : '' }}">
+                    <a href="javascript:void(0);" class="{{ request()->is('*issue*') ? 'mm-active' : '' }}">
                         <i class="metismenu-icon fas fa-question-circle"></i>
                         Complaint Type
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
@@ -176,7 +176,7 @@
                     </ul>
                 </li>
                 <li class="{{ request()->is('*messageRecipient*') ? 'mm-active' : '' }}">
-                    <a href="javascript:void(0);" class="{{ request()->is('*messageRecipient/*') ? 'mm-active' : '' }}">
+                    <a href="javascript:void(0);" class="{{ request()->is('*messageRecipient*') ? 'mm-active' : '' }}">
                         <i class="metismenu-icon fas fa-sms"></i>
                         SMS Recipients
                         <i class="metismenu-state-icon pe-7s-angle-down caret-left"></i>
