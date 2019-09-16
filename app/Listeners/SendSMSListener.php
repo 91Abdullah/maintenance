@@ -8,6 +8,7 @@ use App\Setting;
 use GuzzleHttp\Client;
 use Illuminate\Queue\InteractsWithQueue;
 use Illuminate\Contracts\Queue\ShouldQueue;
+use Illuminate\Support\Arr;
 
 class SendSMSListener
 {
@@ -46,22 +47,26 @@ class SendSMSListener
         if(in_array($complain->ticket_status->name, $this->statuses))
         {
             if($complain->message_recipients()->exists()) {
+                $recipients = [];
                 foreach ($complain->message_recipients as $message_recipient) {
-                    $client = new Client();
-                    $response = $client->get($url, ['query' => [
-                        'username' => $username,
-                        'password' => $password,
-                        'receiver' => $message_recipient->numbers,
-                        'msgdata' => $template
-                    ]]);
-                    $complain->message_responses()->create([
-                        'receiver' => $message_recipient->numbers,
-                        'response' => $response->getReasonPhrase(),
-                        'code' => $response->getStatusCode(),
-                        'status' => $complain->ticket_status->name,
-                        'message' => $response->getBody()
-                    ]);
+                    $recipients[] = explode(",", $message_recipient->numbers);
                 }
+                $recipients = collect(Arr::flatten($recipients))->unique()->all();
+                $client = new Client();
+                $response = $client->get($url, ['query' => [
+                    'username' => $username,
+                    'password' => $password,
+                    'receiver' => implode(",", $recipients),
+                    'msgdata' => $template
+                ]]);
+                dump($response->getBody());
+                $complain->message_responses()->create([
+                    'receiver' => implode(",", $recipients),
+                    'response' => $response->getReasonPhrase(),
+                    'code' => $response->getStatusCode(),
+                    'status' => $complain->ticket_status->name,
+                    'message' => $response->getBody()
+                ]);
             }
         }
     }

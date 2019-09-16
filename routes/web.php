@@ -53,6 +53,7 @@ Route::prefix('backend')->middleware(['auth'])->group(function () {
 
         // Search Route
         Route::get('/searchCustomer', 'SearchController@searchCustomer')->name('search.customer');
+        Route::get('/getMainUser', 'SearchController@getMainUser')->name('get.mainUser');
 
         Route::resource('customer', 'CustomerController');
         Route::get('/complain/search', 'ComplainController@showSearch')->name('complain.form');

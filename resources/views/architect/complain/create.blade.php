@@ -14,7 +14,7 @@
 
     <div class="main-card mb-3 card">
         <div class="card-body">
-            <form method="post" action="{{ route('complain.store') }}">
+            <form id="form" method="post" action="{{ route('complain.store') }}">
                 @csrf
 
                 <div class="form-group row">
@@ -81,13 +81,27 @@
                 </div>
 
                 <div class="form-group row">
+                    <label for="department_id" class="col-form-label col-sm-2">Department <sup style="color:red;">*</sup></label>
+                    <div class="col-sm-10">
+                        <select class="form-control singleselect-dropdown @error('department_id') is-invalid @enderror" style="width: 100%; height: 100%" name="department_id" id="department_id" required>
+                            <option></option>
+                            @foreach(\App\Department::pluck('name', 'id') as $index => $department)
+                                <option {{ old('department_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $department }}</option>
+                            @endforeach
+                        </select>
+                        @error('department_id')
+                        <div class="invalid-feedback">
+                            <strong>{{ $message }}</strong>
+                        </div>
+                        @enderror
+                    </div>
+                </div>
+
+                <div class="form-group row">
                     <label for="maintenance_user_id" class="col-form-label col-sm-2">Informed To <sup style="color:red;">*</sup></label>
                     <div class="col-sm-10">
                         <select class="form-control singleselect-dropdown @error('maintenance_user_id') is-invalid @enderror" style="width: 100%; height: 100%" name="maintenance_user_id" id="maintenance_user_id" required>
                             <option></option>
-                            @foreach(\App\MaintenanceUser::pluck('name', 'id') as $index => $maintenanceUser)
-                                <option {{ old('maintenance_user_id') == $index ? 'selected' : ''  }} value="{{ $index }}">{{ $maintenanceUser }}</option>
-                            @endforeach
                         </select>
                         @error('maintenance_user_id')
                         <div class="invalid-feedback">
@@ -114,19 +128,19 @@
                     </div>
                 </div>
 
-                <div class="form-group row">
-                    <label for="desc" class="col-form-label col-sm-2">Description</label>
-                    <div class="col-sm-10">
-                        <textarea id="desc" rows="3" name="desc" id="name" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') }}</textarea>
-                        @error('desc')
-                        <div class="invalid-feedback">
-                            <strong>{{ $message }}</strong>
-                        </div>
-                        @enderror
+            {{--<div style="display: none;" id="parent" class="form-group row">
+                <label for="desc" class="col-form-label col-sm-2">Description</label>
+                <div class="col-sm-3">
+                    <textarea id="desc" rows="2" name="desc" id="name" placeholder="Description" class="form-control @error('desc') is-invalid @enderror">{{ old('desc') }}</textarea>
+                    @error('desc')
+                    <div class="invalid-feedback">
+                        <strong>{{ $message }}</strong>
                     </div>
+                    @enderror
                 </div>
+            </div>--}}
 
-                <div class="form-group row">
+                <div id="insertBefore" class="form-group row">
                     <label for="remarks" class="col-form-label col-sm-2">Remarks / Feedback</label>
                     <div class="col-sm-10">
                         <textarea rows="3" name="remarks" id="remarks" placeholder="Remarks / Feedback" class="form-control @error('desc') is-invalid @enderror">{{ old('remarks') }}</textarea>
@@ -151,43 +165,58 @@
 
 @endsection
 
-{{--@push('scripts')
+@push('scripts')
     <script>
-        let url = "{{ route('search.customer') }}";
-        $("#search_customer").select2({
-            ajax: {
-                url: url,
-                dataType: "JSON",
-                processResults: (data) => {
-                    return {
-                        results: $.map(data, (item) => {
-                            return {
-                                text: item.name,
-                                id: item.id,
-                                number: item.number
-                            }
-                        })
-                    }
-                }
-            },
-            theme: "bootstrap4",
-            placeholder: "Search Customer by Name or Number",
-            minimumInputLength: 4,
-            templateSelection: (data, container) => {
-                $(data.element).attr("data-number", data.number);
-                return data.text;
-            }
-        });
 
-        $("#search_customer").on("select2:select", (e) => {
-            let elem = $("#search_customer option:selected");
-            let name = elem.text();
-            let number = elem.data("number");
+        let url = "{{ route('get.mainUser') }}";
+        let _token = "{{ csrf_token() }}";
+
+        $("#department_id").on("select2:select", (e) => {
+            let elem = $("#department_id option:selected");
             let id = elem.val();
 
-            $("#customer_name").val(name);
-            $("#customer_number").val(number);
-            $("#customer_id").val(id);
+            $("#maintenance_user_id").select2({
+                ajax: {
+                    url: url,
+                    dataType: 'json',
+                    data: function(params) {
+                        return {
+                            department_id: id,
+                            _token: _token
+                        }
+                    },
+                    processResults: function(data, params) {
+                        console.log(data);
+                        return {
+                            results: data
+                        };
+                    }
+                }
+            });
         });
+
+        $('#issue_id')
+            .on('select2:select', (e) => {
+                let elem = $('#issue_id option:selected');
+                let text = e.params.data.text;
+                let id = e.params.data.id;
+                // let __parent = $('#parent');
+                let __form = $('#form');
+                let __parent = $('<div id="desc_'+ id +'" class="form-group row"><label class="control-label col-sm-2">Description for ' +  text +'</label></div>');
+
+                let newDiv = $('<div class="col-sm-10"><textarea class="form-control" name="desc_'+ id +'" placeholder="Description" rows="3"></textarea></div>');
+                __parent.append(newDiv);
+                // __form.append(__parent);
+               __parent.insertBefore($('#insertBefore'));
+
+            })
+            .on('select2:unselect', (e) => {
+                let text = e.params.data.text;
+                let id = e.params.data.id;
+
+                let elem = $('#desc_' + id);
+                elem.remove();
+            });
+
     </script>
-@endpush--}}
+@endpush

@@ -134,7 +134,7 @@ class ComplainController extends Controller
             $complain->outlet_id = $request->outlet_id;
             $complain->ticket_status_id = $request->ticket_status_id;
             $complain->user_id = Auth::user()->id;
-            $complain->desc = $request->desc;
+            $complain->desc = $request->get("desc_$value");
             $complain->remarks = $request->remarks;
             $complain->informed_by = $request->informed_by;
             $complain->maintenance_user_id = $request->maintenance_user_id;
@@ -184,38 +184,19 @@ class ComplainController extends Controller
     public function update(Request $request, Complain $complain)
     {
         $request->validate([
-            "outlet_id" => ["required", "exists:outlets,id"],
-            'maintenance_user_id' => ['required', 'exists:maintenance_users,id'],
-            'message_recipient_id' => ['array', 'nullable', 'exists:message_recipients,id'],
-            "issue_id" => ["required", "exists:issues,id"],
             "ticket_status_id" => ["required", "exists:ticket_statuses,id"],
             'resolved_by' => ['nullable', 'string'],
         ]);
-
-        /*if($request->customer_name !== $complain->customer->name ||
-            $request->customer_number !== $complain->customer->number) {
-            // Update Customer
-
-            $customer = Customer::findOrFail($request->customer_id);
-            $customer->name = $request->customer_name;
-            $customer->number = $request->customer_number;
-            $customer->save();
-        }*/
 
         if($request->ticket_status_id == TicketStatus::where('name', 'Closed')->first()->id) {
             $complain->closure_time = Carbon::now();
         }
 
-        $complain->outlet_id = $request->outlet_id;
         $complain->ticket_status_id = $request->ticket_status_id;
         $complain->desc = $request->desc;
         $complain->remarks = $request->remarks;
         $complain->resolved_by = $request->resolved_by;
-        $complain->maintenance_user_id = $request->maintenance_user_id;
         $complain->update();
-
-        $complain->issues()->sync([$request->issue_id]);
-        $complain->message_recipients()->sync($request->message_recipient_id);
 
         event(new SendSMSEvent($complain));
 

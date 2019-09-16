@@ -149,42 +149,6 @@
 
 @push('scripts')
     <script>
-        /*let url = "{{ route('search.customer') }}";
-        $("#search_customer").select2({
-            ajax: {
-                url: url,
-                dataType: "JSON",
-                processResults: (data) => {
-                    return {
-                        results: $.map(data, (item) => {
-                            return {
-                                text: item.name,
-                                id: item.id,
-                                number: item.number
-                            }
-                        })
-                    }
-                }
-            },
-            theme: "bootstrap4",
-            placeholder: "Search Customer by Name or Number",
-            minimumInputLength: 4,
-            templateSelection: (data, container) => {
-                $(data.element).attr("data-number", data.number);
-                return data.text;
-            }
-        });
-
-        $("#search_customer").on("select2:select", (e) => {
-            let elem = $("option:selected");
-            let name = elem.text();
-            let number = elem.data("number");
-            let id = elem.val();
-
-            $("#customer_name").val(name);
-            $("#customer_number").val(number);
-            $("#customer_id").val(id);
-        });*/
 
         $("#ticket_status_id").on("select2:select", (e) => {
             let elem = $("#ticket_status_id option:selected");
@@ -197,5 +161,11 @@
                 $("#resolved_by").attr("required", false);
             }
         });
+
+        $('#issue_id').prop('disabled', true);
+        $('#maintenance_user_id').prop('disabled', true);
+        $('#outlet_id').prop('disabled', true);
+        $('#message_recipient_id').prop('disabled', true);
+
     </script>
 @endpush
