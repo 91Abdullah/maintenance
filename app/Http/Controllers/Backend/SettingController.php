@@ -12,12 +12,6 @@ class SettingController extends Controller
 {
     public function index()
     {
-        $complain = Complain::find(528);
-        $recipients = [];
-        foreach ($complain->message_recipients as $message_recipient) {
-            $recipients[] = explode(",", $message_recipient->numbers);
-        }
-        return dd(implode(",",collect(Arr::flatten($recipients))->unique()->all()));
         $setting = Setting::firstOrFail();
         return view("architect.settings.index", compact('setting'));
     }
